@@ -1,13 +1,25 @@
-﻿<!doctype html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"> -->
+    <!-- I guess you need to include these old boostraps as well for summer note to work??? -->
+    <!-- include libraries(jQuery, bootstrap) -->
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
 
-    <title>Hello, world!</title>
+    <!-- include summernote css/js -->
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script>
+    
+    <!-- End of Summernote section! -->
+
+    <title>Floor Planner</title>
 </head>
 
 <body>
@@ -26,13 +38,14 @@
                         <label for="area-name">Area Name:</label>
                         <input type="text" class="form-control" id="area-name">
                     </div>
+
                     <div class="form-group">
                         <label for="area-desc">Description:</label>
-                        <textarea class="form-control" rows="10" id="area-desc"></textarea>
+                        <div id="summernoteAreaDesc" id="area-desc"></div>
                     </div>
                     <div class="form-group">
                         <label for="area-hover-desc">Hover Description:</label>
-                        <textarea class="form-control" rows="2" id="area-hover-desc"></textarea>
+                        <div id="summernoteAreaHoverDesc" id="area-hover-desc"></div>
                     </div>
                     <button type="button" class="btn">Edit Space Description</button>
                     <button type="button" class="btn">Delete Space</button>
@@ -52,13 +65,39 @@
                     <button type="button" class="btn">Done</button>
                     <div class="form-group">
                         <label for="floor-desc">Description:</label>
-                        <textarea class="form-control" rows="10" id="floor-desc"></textarea>
+                        <div id="summernoteFloorDesc" id="floor-desc"></div>
                     </div>
                 </div>
             </div>
             <div class="col-sm-4" style="background-color:aquamarine;"></div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#summernoteAreaDesc').summernote({
+                height: 150,                 // set editor height
+                minHeight: null,             // set minimum height of editor
+                maxHeight: null,             // set maximum height of editor
+                focus: false                  // set focus to editable area after initializing summernote
+            });
+
+            $('#summernoteAreaHoverDesc').summernote({
+                height: 70,                 // set editor height
+                minHeight: null,             // set minimum height of editor
+                maxHeight: null,             // set maximum height of editor
+                focus: false                  // set focus to editable area after initializing summernote
+            });
+
+            $('#summernoteFloorDesc').summernote({
+                height: 250,                 // set editor height
+                minHeight: null,             // set minimum height of editor
+                maxHeight: null,             // set maximum height of editor
+                focus: false                  // set focus to editable area after initializing summernote
+            });
+        });
+    </script>
 </body>
 
 </html>
