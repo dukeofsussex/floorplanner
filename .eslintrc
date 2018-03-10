@@ -1,0 +1,10 @@
+{
+    "env": {
+        "browser": true
+    },
+    "extends": "airbnb-base",
+    "rules": {
+        "indent": [ "error", 4 ],
+        "class-methods-use-this": "warn"
+    }
+}

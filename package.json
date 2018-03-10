@@ -1,0 +1,38 @@
+{
+    "name": "floorplanner",
+    "version": "1.0.0",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dukeofsussex/floorplanner.git"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/dukeofsussex/floorplanner/issues"
+    },
+    "homepage": "https://github.com/dukeofsussex/floorplanner#readme",
+    "dependencies": {
+        "bootstrap": "^4.0.0",
+        "jquery": "^3.3.1",
+        "popper.js": "^1.12.9",
+        "summernote": "^0.8.10"
+    },
+    "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-eslint": "^8.0.3",
+        "babel-loader": "^7.1.2",
+        "babel-preset-env": "^1.6.1",
+        "copy-webpack-plugin": "^4.3.1",
+        "eslint": "^4.13.0",
+        "eslint-config-airbnb-base": "^12.1.0",
+        "eslint-loader": "^1.9.0",
+        "eslint-plugin-import": "^2.8.0",
+        "webpack": "^3.10.0",
+        "webpack-dev-server": "^2.9.7"
+    },
+    "scripts": {
+        "build": "./node_modules/.bin/webpack",
+        "lint": "./node_modules/.bin/eslint ./src/**/*.js --color",
+        "lint-fix": "./node_modules/.bin/eslint ./src/**/*.js --color --fix",
+        "serve": "./node_modules/.bin/webpack-dev-server"
+    }
+}
