@@ -59,7 +59,8 @@ typings/
 
 # VS
 .vs
-*.csproj
+*.csproj*
 *.code-workspace
+*.sln
 bin/
 obj/
