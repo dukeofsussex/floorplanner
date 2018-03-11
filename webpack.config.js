@@ -8,16 +8,24 @@ module.exports = {
         filename: 'floorplanner.bundle.min.js',
         path: path.resolve(__dirname, 'dist'),
         libraryTarget: 'var',
-        library: 'Floorplanner'
+        library: 'FloorPlanner'
     },
     module: {
         rules: [
             {
-                test: /\.js$/,
-                exclude: path.resolve(__dirname, 'node_modules'),
-                enforce: 'pre',
-                use: ['eslint-loader']
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
             },
+            {
+                test: /\.(png|woff|woff2|eot|ttf|svg)(\?.*)?$/,
+                use: ['url-loader?limit=100000']
+            },
+            //{
+            //    test: /\.js$/,
+            //    exclude: path.resolve(__dirname, 'node_modules'),
+            //    enforce: 'pre',
+            //    use: ['eslint-loader']
+            //},
             {
                 test: /\.js$/,
                 exclude: path.resolve(__dirname, 'node_modules'),
