@@ -36,4 +36,8 @@ export default class FloorPlanner {
             focus: false                  // set focus to editable area after initializing summernote
         });
     }
+
+    loadFloorPlan(url) {
+        $('#floorplan').attr('src', url);
+    }
 }
