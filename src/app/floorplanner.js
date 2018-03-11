@@ -1,4 +1,4 @@
-﻿import jQuery from "jquery";
+﻿import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
 
 // Import all the things
@@ -7,6 +7,8 @@ import 'bootstrap';
 import 'codemirror';
 import 'codemirror/mode/xml/xml.js';
 import 'summernote/dist/summernote-bs4.js';
+
+import Polygon from './polygon';
 
 export default class FloorPlanner {
     constructor() {
@@ -31,9 +33,11 @@ export default class FloorPlanner {
             maxHeight: null,             // set maximum height of editor
             focus: false                  // set focus to editable area after initializing summernote
         });
+
+        const polygon = new Polygon('#floorplan > svg');
     }
 
     loadFloorPlan(url) {
-        $('#floorplan').attr('src', url);
+        $('#floorplan > img').attr('src', url);
     }
 }

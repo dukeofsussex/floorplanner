@@ -2,6 +2,21 @@
 @import "~summernote/dist/summernote-bs4";
 @import "~codemirror/lib/codemirror";
 
-#canvas {
-    background-color: red;
+#floorplan {
+
+    position: relative;
+
+    img {
+        width: 100%;
+    }
+
+    svg {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+    }
 }
