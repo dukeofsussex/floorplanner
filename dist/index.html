@@ -5,15 +5,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Floor Planner</title>
+    <link rel="stylesheet" href="floorplanner.min.css" />
 </head>
 
 <body>
     <div class="container-fluid">
         <h1>Level Design Grapher</h1>
         <div class="row">
-            <div class="col-sm-8" style="background-color:lavender; height:525px">
+            <div class="col-sm-8" style="background-color:lavender;">
                 Riverside
-                <img src="https://i.imgur.com/Y9cDiqE.png" width="100%">
+                <img id="floorplan" src="https://i.imgur.com/Y9cDiqE.png" style="width: 100%">
+                <svg id="canvas"></svg>
             </div>
             <div class="col-sm-4" style="background-color:lavenderblush;">
                 <div>
@@ -21,34 +23,35 @@
                         <label for="area-name">Area Name:</label>
                         <input type="text" class="form-control" id="area-name">
                     </div>
-
                     <div class="form-group">
-                        <label for="area-desc">Description:</label>
-                        <div id="summernoteAreaDesc" id="area-desc"></div>
+                        <label for="summernoteAreaDesc">Description:</label>
+                        <div id="summernoteAreaDesc"></div>
                     </div>
                     <div class="form-group">
-                        <label for="area-hover-desc">Hover Description:</label>
-                        <div id="summernoteAreaHoverDesc" id="area-hover-desc"></div>
+                        <label for="summernoteAreaHoverDesc">Hover Description:</label>
+                        <div id="summernoteAreaHoverDesc"></div>
                     </div>
-                    <button type="button" class="btn">Edit Space Description</button>
-                    <button type="button" class="btn">Delete Space</button>
-                    <button type="button" class="btn">Done</button>
+                    <button type="button" class="btn btn-outline-info">Edit Space Description</button>
+                    <button type="button" class="btn btn-outline-danger">Delete Space</button>
+                    <button type="button" class="btn btn-outline-success">Done</button>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-8" style="background-color:aquamarine;">
                 <div>
-                    <div class="form-group">
-                        <label for="floor-url">Image URL:</label>
-                        <input type="text" class="form-control" id="floor-url">
+                    <div class="form-group input-group">
+                        <input type="text" class="form-control" id="floor-url" placeholder="Floorplan URL" aria-label="Floorplan URL">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-primary" type="button" onclick="FloorPlanner.loadFloorPlan(document.getElementById('floor-url').value)">Load Floorplan</button>
+                        </div>
                     </div>
-                    <button type="button" class="btn">Draw Space</button>
-                    <button type="button" class="btn">Edit Floor Description</button>
-                    <button type="button" class="btn">Done</button>
+                    <button type="button" class="btn btn-outline-dark">Draw Space</button>
+                    <button type="button" class="btn btn-outline-info">Edit Floor Description</button>
+                    <button type="button" class="btn btn-outline-success">Done</button>
                     <div class="form-group">
-                        <label for="floor-desc">Description:</label>
-                        <div id="summernoteFloorDesc" id="floor-desc"></div>
+                        <label for="summernoteFloorDesc">Description:</label>
+                        <div id="summernoteFloorDesc"></div>
                     </div>
                 </div>
             </div>
