@@ -1,18 +1,64 @@
-<!doctype html>
+﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-
-    <title>Hello, world!</title>
+    <title>Floor Planner</title>
 </head>
-<body>
-    <h1>Hello, world!</h1>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<body>
+    <div class="container-fluid">
+        <h1>Level Design Grapher</h1>
+        <div class="row">
+            <div class="col-sm-8" style="background-color:lavender; height:525px">
+                Riverside
+                <img src="https://i.imgur.com/Y9cDiqE.png" width="100%">
+            </div>
+            <div class="col-sm-4" style="background-color:lavenderblush;">
+                <div>
+                    <div class="form-group">
+                        <label for="area-name">Area Name:</label>
+                        <input type="text" class="form-control" id="area-name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="area-desc">Description:</label>
+                        <div id="summernoteAreaDesc" id="area-desc"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="area-hover-desc">Hover Description:</label>
+                        <div id="summernoteAreaHoverDesc" id="area-hover-desc"></div>
+                    </div>
+                    <button type="button" class="btn">Edit Space Description</button>
+                    <button type="button" class="btn">Delete Space</button>
+                    <button type="button" class="btn">Done</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8" style="background-color:aquamarine;">
+                <div>
+                    <div class="form-group">
+                        <label for="floor-url">Image URL:</label>
+                        <input type="text" class="form-control" id="floor-url">
+                    </div>
+                    <button type="button" class="btn">Draw Space</button>
+                    <button type="button" class="btn">Edit Floor Description</button>
+                    <button type="button" class="btn">Done</button>
+                    <div class="form-group">
+                        <label for="floor-desc">Description:</label>
+                        <div id="summernoteFloorDesc" id="floor-desc"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4" style="background-color:aquamarine;"></div>
+        </div>
+    </div>
+    <script src="floorplanner.bundle.min.js"></script>
+    <script>
+        var FloorPlanner = new FloorPlanner.default();
+    </script>
 </body>
+
 </html>
