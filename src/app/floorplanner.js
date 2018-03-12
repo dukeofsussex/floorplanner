@@ -40,4 +40,12 @@ export default class FloorPlanner {
     loadFloorPlan(url) {
         $('#floorplan > img').attr('src', url);
     }
+
+    toggleEditingButtons(toShow, toHide) {
+        var ts = document.getElementById(toShow);
+        ts.style.display = "block";
+
+        var th = document.getElementById(toHide);
+        th.style.display = "none";
+    }
 }
