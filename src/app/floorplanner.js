@@ -42,10 +42,10 @@ export default class FloorPlanner {
     }
 
     toggleEditingButtons(toShow, toHide) {
-        var ts = document.getElementById(toShow);
+        let ts = document.getElementById(toShow);
         ts.style.display = "block";
 
-        var th = document.getElementById(toHide);
+        let th = document.getElementById(toHide);
         th.style.display = "none";
     }
 }
