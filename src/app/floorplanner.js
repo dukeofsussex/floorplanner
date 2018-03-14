@@ -9,6 +9,7 @@ import 'codemirror/mode/xml/xml.js';
 import 'summernote/dist/summernote-bs4.js';
 
 import Polygon from './polygon';
+import Storage from './storage';
 
 export default class FloorPlanner {
     constructor() {
@@ -34,18 +35,26 @@ export default class FloorPlanner {
             focus: false                  // set focus to editable area after initializing summernote
         });
 
-        const polygon = new Polygon('#floorplan > svg');
+        this.polygon = new Polygon('#floorplan > svg', this.handlePolygonSelection);
+        this.storage = new Storage();
+        this.selectedFloor = 0;
+    }
+
+    init() {
+        this.floorplans = this.storage.get();
+        this.polygon.drawAreas(this.floorplans.floors[this.selectedFloor].areas);
     }
 
     loadFloorPlan(url) {
         $('#floorplan > img').attr('src', url);
     }
 
-    toggleEditingButtons(toShow, toHide) {
-        let ts = document.getElementById(toShow);
-        ts.style.display = "block";
+    handlePolygonSelection(polygon) {
+        console.log(polygon);
+    }
 
-        let th = document.getElementById(toHide);
-        th.style.display = "none";
+    toggleEditingButtons(toShow, toHide) {
+        document.getElementById(toShow).style.display = 'block';
+        document.getElementById(toHide).style.display = 'none';
     }
 }
