@@ -44,7 +44,7 @@
     "webpack-dev-server": "^2.9.7"
   },
   "scripts": {
-    "build": "./node_modules/.bin/webpack",
+    "build": "./node_modules/.bin/webpack --env.production",
     "lint": "./node_modules/.bin/eslint ./src/**/*.js --color",
     "lint-fix": "./node_modules/.bin/eslint ./src/**/*.js --color --fix",
     "serve": "./node_modules/.bin/webpack-dev-server"
