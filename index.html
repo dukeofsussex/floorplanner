@@ -14,7 +14,8 @@
             <a class="navbar-brand" href="#">Floorplanner</a>
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="fileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="#" id="fileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
                         File
                     </a>
                     <div class="dropdown-menu" aria-labelledby="fileDropdown">
@@ -34,7 +35,12 @@
                 </div>
             </div>
             <div class="col-sm-4" style="background-color:lavenderblush;">
-                <div>
+                <div id="areaDisplayElements">
+                    <h3>Area title</h3>
+                    <p>Area Description</p>
+                    <button type="button" class="btn btn-outline-info btn-sm" onclick="FloorPlanner.toggleEditingButtons('areaEditElements','areaDisplayElements')">Edit Area Details</button>
+                </div>
+                <div id="areaEditElements">
                     <div class="form-group">
                         <label for="area-name">Area Name:</label>
                         <input type="text" class="form-control" id="area-name">
@@ -47,24 +53,26 @@
                         <label for="summernoteAreaHoverDesc">Hover Description:</label>
                         <div id="summernoteAreaHoverDesc"></div>
                     </div>
-                    <button type="button" class="btn btn-outline-info">Edit Space Description</button>
-                    <button type="button" class="btn btn-outline-danger">Delete Space</button>
-                    <button type="button" class="btn btn-outline-success">Done</button>
+                    <button type="button" class="btn btn-outline-danger">Delete Area</button>
+                    <button type="button" class="btn btn-outline-success" onclick="FloorPlanner.toggleEditingButtons('areaDisplayElements','areaEditElements')">Done</button>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-8" style="background-color:aquamarine;">
-                <div>
+                <div id="floorDisplayElements">
+                    <button type="button" class="btn btn-outline-dark btn-sm" onclick="FloorPlanner.toggleEditingButtons('floorEditElements','floorDisplayElements')">Edit Floor Details</button>
+                    <p>Here would go the description as saved from WYSIWYG</p>
+                </div>
+                <div id="floorEditElements">
                     <div class="form-group input-group">
                         <input type="text" class="form-control" id="floor-url" placeholder="Floorplan URL" aria-label="Floorplan URL">
                         <div class="input-group-append">
                             <button class="btn btn-outline-primary" type="button" onclick="FloorPlanner.loadFloorPlan(document.getElementById('floor-url').value)">Load Floorplan</button>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-dark">Draw Space</button>
-                    <button type="button" class="btn btn-outline-info">Edit Floor Description</button>
-                    <button type="button" class="btn btn-outline-success">Done</button>
+                    <button type="button" class="btn btn-outline-dark">Draw Area</button>
+                    <button type="button" class="btn btn-outline-success" onclick="FloorPlanner.toggleEditingButtons('floorDisplayElements','floorEditElements')">Done</button>
                     <div class="form-group">
                         <label for="summernoteFloorDesc">Description:</label>
                         <div id="summernoteFloorDesc"></div>
@@ -74,9 +82,13 @@
             <div class="col-sm-4" style="background-color:aquamarine;"></div>
         </div>
     </div>
+
     <script src="floorplanner.bundle.min.js"></script>
     <script>
         var FloorPlanner = new FloorPlanner.default();
+        FloorPlanner.init();
+        FloorPlanner.toggleEditingButtons('floorDisplayElements', 'floorEditElements');
+        FloorPlanner.toggleEditingButtons('areaDisplayElements', 'areaEditElements');
     </script>
 </body>
 
