@@ -183,12 +183,11 @@ export default class Polygon {
             .attr('stroke-width', 1)
             .attr('fill', '#007bff')
             .attr('fill-opacity', 0.25)
-            .on('click', (d, i) => {
+            .on('click', (d, i, j) => {
                 d3.event.stopPropagation();
-                console.log('Polygon click');
                 this.selectedAreaIndex = this.selectedAreaIndex === i ? -1 : i;
                 this.drawAreas(areas);
-                //this.handlePolygonSelection
+                this.handlePolygonSelection(d3.select(j[i].parentNode).datum());
             });
 
         const circles = individualAreaGroup.selectAll('circle')
