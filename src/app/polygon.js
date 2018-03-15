@@ -47,23 +47,55 @@ export default class Polygon {
     }
 
     addPolygonPoint(coords) {
+        const newPoint = {
+            x: Math.round(coords[0]),
+            y: Math.round(coords[1])
+        };
+
         if (this.selectedAreaIndex !== -1) { // Add to area
-            this.areas[this.selectedAreaIndex].points.push({
-                x: Math.round(coords[0]),
-                y: Math.round(coords[1])
-            });
+            const selectedArea = this.areas[this.selectedAreaIndex];
+            let index = 0;
+            let shortestDistance = this.width;
+
+            if (selectedArea.points.length > 2) {
+                for (let i = 1; i < selectedArea.points.length; i++) {
+                    const distance = this.distanceFromLine(newPoint, selectedArea.points[i - 1], selectedArea.points[i]);
+                    const intersectionPoint = this.getClosestPointOnLine(newPoint, selectedArea.points[i - 1], selectedArea.points[i]);
+                    console.log(newPoint, selectedArea.points[i - 1], selectedArea.points[i], intersectionPoint, distance, shortestDistance);
+                    if (distance < shortestDistance && this.pointIsBetween(intersectionPoint, selectedArea.points[i - 1], selectedArea.points[i])) {
+                        console.log('Perfect');
+                        index = i;
+                        shortestDistance = distance;
+                    }
+                }
+
+                const distance = this.distanceFromLine(newPoint, selectedArea.points[selectedArea.points.length - 1], selectedArea.points[0]);
+                const intersectionPoint = this.getClosestPointOnLine(newPoint, selectedArea.points[selectedArea.points.length - 1], selectedArea.points[0]);
+                console.log(newPoint, selectedArea.points[selectedArea.points.length - 1], selectedArea.points[0], intersectionPoint, distance, shortestDistance);
+                if (distance < shortestDistance && this.pointIsBetween(intersectionPoint, selectedArea.points[selectedArea.points.length - 1], selectedArea.points[0])) {
+                    index = selectedArea.points.length;
+                    shortestDistance = distance;
+                }
+
+                console.log(index);
+
+                selectedArea.points = [
+                    ...selectedArea.points.slice(0, index),
+                    newPoint,
+                    ...selectedArea.points.slice(index)
+                ];
+            } else {
+                selectedArea.points.push(newPoint);
+            }
+
+            console.log(selectedArea.points);
         } else { // Create new area
             this.areas.push({
                 uid: this.generateID(),
-                points: [{
-                    x: Math.round(coords[0]),
-                    y: Math.round(coords[1])
-                }]
+                points: [newPoint]
             });
             this.selectedAreaIndex = this.areas.length - 1;
         }
-
-        // https://stackoverflow.com/questions/2855189/sort-latitude-and-longitude-coordinates-into-clockwise-ordered-quadrilateral
 
         this.drawAreas(this.areas);
     }
@@ -152,5 +184,33 @@ export default class Polygon {
         }
 
         return text;
+    }
+
+    distance(lineStartPoint, lineEndPoint) {
+        return Math.sqrt(Math.pow(lineEndPoint.x - lineStartPoint.x, 2) + Math.pow(lineEndPoint.y - lineStartPoint.y, 2));
+    }
+
+    distanceFromLine(point, lineStartPoint, lineEndPoint) {
+        return Math.abs((lineEndPoint.y - lineStartPoint.y) * point.x
+            - (lineEndPoint.x - lineStartPoint.x) * point.y
+            + (lineEndPoint.x * lineStartPoint.y)
+            - (lineEndPoint.y * lineStartPoint.x))
+            / this.distance(lineStartPoint, lineEndPoint);
+    }
+
+    pointIsBetween(point, lineStartPoint, lineEndPoint) {
+        console.log(Math.round(this.distance(lineStartPoint, point)), Math.round(this.distance(point, lineEndPoint)), Math.round(this.distance(lineStartPoint, lineEndPoint)),
+            (Math.round(this.distance(lineStartPoint, point)) + Math.round(this.distance(point, lineEndPoint))) === Math.round(this.distance(lineStartPoint, lineEndPoint)));
+        return (Math.round(this.distance(lineStartPoint, point)) + Math.round(this.distance(point, lineEndPoint))) <= (Math.round(this.distance(lineStartPoint, lineEndPoint)) + 1)
+            && (Math.round(this.distance(lineStartPoint, point)) + Math.round(this.distance(point, lineEndPoint))) >= (Math.round(this.distance(lineStartPoint, lineEndPoint)) - 1);
+    }
+
+    getClosestPointOnLine(point, lineStartPoint, lineEndPoint) {
+        const k = ((point.x - lineStartPoint.x) * (lineEndPoint.x - lineStartPoint.x) + (point.y - lineStartPoint.y) * (lineEndPoint.y - lineStartPoint.y))
+            / (Math.pow(lineEndPoint.x - lineStartPoint.x, 2) + Math.pow(lineEndPoint.y - lineStartPoint.y, 2));
+        return {
+            x: lineStartPoint.x + k * (lineEndPoint.x - lineStartPoint.x),
+            y: lineStartPoint.y + k * (lineEndPoint.y - lineStartPoint.y)
+        };
     }
 }
