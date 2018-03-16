@@ -108,7 +108,7 @@ export default class Polygon {
             selectedArea.points.push(newPoint);
         }
         console.log(selectedArea.points);
-        
+
         this.drawAreas(this.areas);
     }
 
@@ -185,7 +185,8 @@ export default class Polygon {
             .attr('fill-opacity', 0.25)
             .on('click', (d, i, j) => {
                 d3.event.stopPropagation();
-                this.selectedAreaIndex = this.selectedAreaIndex === i ? -1 : i;
+                const index = areas.findIndex((a) => a.uid === d3.select(j[i].parentNode).datum().uid);
+                this.selectedAreaIndex = (this.selectedAreaIndex === index) ? -1 : index;
                 this.drawAreas(areas);
                 this.handlePolygonSelection(d3.select(j[i].parentNode).datum());
             });
@@ -236,7 +237,7 @@ export default class Polygon {
     generateID() {
         const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         let text = "";
-        
+
         for (let i = 0; i < 5; i++) {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
