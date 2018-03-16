@@ -46,6 +46,10 @@ polygon {
     }
 }
 
+.edit {
+    display: none;
+}
+
 .polygon-drawing {
     circle {
         cursor: pointer;

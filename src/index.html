@@ -9,13 +9,13 @@
 </head>
 
 <body>
-    <div class="container-fluid">
-        <nav class="navbar navbar-expand-sm fixed-top navbar-light bg-light">
-            <a class="navbar-brand" href="#">Floorplanner</a>
+    <div class="container-fluid bg-light">
+        <nav class="navbar navbar-expand-sm fixed-top navbar-light bg-dark">
+            <a class="navbar-brand text-white" href="#">Floorplanner</a>
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="fileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="fileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">
                         File
                     </a>
                     <div class="dropdown-menu" aria-labelledby="fileDropdown">
@@ -23,24 +23,28 @@
                         <a class="dropdown-item" href="#">Export</a>
                     </div>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" id="editButton" role="button" data-toggle="modal" data-target="#floorModal">
+                        Add floor
+                    </a>
+                </li>
             </ul>
         </nav>
         <h1>Level Design Grapher</h1>
         <div class="row">
-            <div class="col-sm-8" style="background-color:lavender;">
+            <div class="col-sm-8">
                 Riverside
                 <div id="floorplan">
                     <img src="https://i.imgur.com/Y9cDiqE.png">
                     <svg></svg>
                 </div>
             </div>
-            <div class="col-sm-4" style="background-color:lavenderblush;">
-                <div id="areaDisplayElements">
+            <div class="col-sm-4">
+                <div class="show">
                     <h3>Area title</h3>
                     <p>Area Description</p>
-                    <button type="button" class="btn btn-outline-info btn-sm" onclick="FloorPlanner.toggleEditingButtons('areaEditElements','areaDisplayElements')">Edit Area Details</button>
                 </div>
-                <div id="areaEditElements">
+                <div class="edit">
                     <div class="form-group">
                         <label for="area-name">Area Name:</label>
                         <input type="text" class="form-control" id="area-name">
@@ -54,32 +58,49 @@
                         <div id="summernoteAreaHoverDesc"></div>
                     </div>
                     <button type="button" class="btn btn-outline-danger">Delete Area</button>
-                    <button type="button" class="btn btn-outline-success" onclick="FloorPlanner.toggleEditingButtons('areaDisplayElements','areaEditElements')">Done</button>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-8" style="background-color:aquamarine;">
-                <div id="floorDisplayElements">
-                    <button type="button" class="btn btn-outline-dark btn-sm" onclick="FloorPlanner.toggleEditingButtons('floorEditElements','floorDisplayElements')">Edit Floor Details</button>
+            <div class="col-sm-8">
+                <div class="show">
                     <p>Here would go the description as saved from WYSIWYG</p>
                 </div>
-                <div id="floorEditElements">
-                    <div class="form-group input-group">
-                        <input type="text" class="form-control" id="floor-url" placeholder="Floorplan URL" aria-label="Floorplan URL">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-primary" type="button" onclick="FloorPlanner.loadFloorPlan(document.getElementById('floor-url').value)">Load Floorplan</button>
-                        </div>
+                <div class="edit">
+                    <div class="form-group">
+                        <input type="text" id="floor-name" class="form-control"  placeholder="Floor title" aria-label="Floor title">
                     </div>
-                    <button type="button" class="btn btn-outline-dark">Draw Area</button>
-                    <button type="button" class="btn btn-outline-success" onclick="FloorPlanner.toggleEditingButtons('floorDisplayElements','floorEditElements')">Done</button>
                     <div class="form-group">
                         <label for="summernoteFloorDesc">Description:</label>
                         <div id="summernoteFloorDesc"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4" style="background-color:aquamarine;"></div>
+            <div class="col-sm-4">
+                <button type="button" class="btn btn-block btn-outline-primary show" onclick="FloorPlanner.toggleEditMode()">Edit Floor Details</button>
+                <button type="button" class="btn btn-block btn-outline-success edit" onclick="FloorPlanner.toggleEditMode()">Save</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="floorModal" tabindex="-1" role="dialog" aria-labelledby="floorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="floorModalLabel">Add floor</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="floor-url" placeholder="Floorplan URL" aria-label="Floorplan URL">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="floor-loader" class="btn btn-outline-primary" data-dismiss="modal">Load Floorplan</button>
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -87,8 +108,6 @@
     <script>
         var FloorPlanner = new FloorPlanner.default();
         FloorPlanner.init();
-        FloorPlanner.toggleEditingButtons('floorDisplayElements', 'floorEditElements');
-        FloorPlanner.toggleEditingButtons('areaDisplayElements', 'areaEditElements');
     </script>
 </body>
 

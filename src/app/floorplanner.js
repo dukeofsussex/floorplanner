@@ -35,9 +35,17 @@ export default class FloorPlanner {
             focus: false                  // set focus to editable area after initializing summernote
         });
 
+        $('#floor-loader').on('click', () => {
+            $('#floorplan > img').attr('src', $('#floor-url').val());
+
+            // Delay clearing the input field until the modal has closed
+            setTimeout(() => $('#floor-url').val(''), 250);
+        });
+
         this.polygon = new Polygon('#floorplan > svg', this.handlePolygonSelection);
         this.storage = new Storage();
         this.selectedFloor = 0;
+        this.editing = false;
     }
 
     init() {
@@ -45,16 +53,13 @@ export default class FloorPlanner {
         this.polygon.drawAreas(this.floorplans.floors[this.selectedFloor].areas);
     }
 
-    loadFloorPlan(url) {
-        $('#floorplan > img').attr('src', url);
-    }
-
     handlePolygonSelection(polygon) {
         console.log(polygon);
     }
 
-    toggleEditingButtons(toShow, toHide) {
-        document.getElementById(toShow).style.display = 'block';
-        document.getElementById(toHide).style.display = 'none';
+    toggleEditMode() {
+        $('.edit').each((i, elem) => elem.style.display = this.editing ? 'none' : 'block');
+        $('.show').each((i, elem) => elem.style.display = this.editing ? 'block' : 'none');
+        this.editing = !this.editing;
     }
 }
