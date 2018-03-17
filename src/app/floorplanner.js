@@ -50,7 +50,7 @@ export default class FloorPlanner {
 
     init() {
         this.floorplans = this.storage.get();
-        this.polygon.drawAreas(this.floorplans.floors[this.selectedFloor].areas);
+        this.polygon.drawAreas(this.floorplans.floors[this.selectedFloor].areas, this.editing);
     }
 
     handlePolygonSelection(polygon) {
@@ -61,5 +61,6 @@ export default class FloorPlanner {
         $('.edit').each((i, elem) => elem.style.display = this.editing ? 'none' : 'block');
         $('.show').each((i, elem) => elem.style.display = this.editing ? 'block' : 'none');
         this.editing = !this.editing;
+        this.polygon.drawAreas(this.floorplans.floors[this.selectedFloor].areas, this.editing);
     }
 }
