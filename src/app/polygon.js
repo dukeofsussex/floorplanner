@@ -1,4 +1,6 @@
 ﻿import * as d3 from 'd3';
+import { Area, Point } from './object';
+
 
 const MARGIN = {
     TOP: 0,
@@ -22,7 +24,6 @@ export default class Polygon {
         this.height = this.dimensions.height - MARGIN.TOP - MARGIN.BOTTOM;
 
         this.drawingPoints = [];
-        this.drawingPointsStart = [];
         this.selectedAreaIndex = -1;
 
         this.svg.attr('width', this.width + MARGIN.LEFT + MARGIN.RIGHT)
@@ -31,32 +32,33 @@ export default class Polygon {
         this.graph = this.svg.append('g')
             .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
 
-        this.plain = this.graph.append('rect')
+        this.graph.append('rect')
             .attr('width', this.width)
             .attr('height', this.height)
             .attr('fill', 'transparent');
 
         this.graph.on('click', function () {
-            console.log(self.selectedAreaIndex, d3.event.target);
             if (self.selectedAreaIndex !== -1) {
                 self.addPolygonPoint(d3.mouse(this));
             } else {
                 self.draw(d3.mouse(this));
             }
         }).on('mousemove', function () {
-            if (self.selectedAreaIndex !== -1) {
+            if (self.selectedAreaIndex !== -1 || self.drawingPoints.length === 0) {
                 return;
             }
-            let g = self.graph.select('g.drawPoly');
-            g.select('line').remove();
-            let line = g.append('line')
-                .attr('x1', self.drawingPointsStart[0])
-                .attr('y1', self.drawingPointsStart[1])
-                .attr('x2', d3.mouse(this)[0] + 2)
-                .attr('y2', d3.mouse(this)[1])
-                .attr('stroke', '#53DBF3')
-                .attr('stroke-width', 1);
+
+            self.polygonDrawingGroup.select('line').remove();
+
+            self.polygonDrawingGroup.append('line')
+                .attr('x1', self.drawingPoints[self.drawingPoints.length - 1].x)
+                .attr('y1', self.drawingPoints[self.drawingPoints.length - 1].y)
+                .attr('x2', d3.mouse(this)[0])
+                .attr('y2', d3.mouse(this)[1]);
         });
+
+        this.polygonDrawingGroup = this.graph.append('g')
+            .attr('class', 'polygon-drawing');
 
         this.areasGroup = this.graph.append('g')
             .attr('class', 'areas');
@@ -68,11 +70,7 @@ export default class Polygon {
     }
 
     addPolygonPoint(coords) {
-        const newPoint = {
-            x: Math.round(coords[0]),
-            y: Math.round(coords[1])
-        };
-
+        const newPoint = new Point(Math.round(coords[0]), Math.round(coords[1]));
         const selectedArea = this.areas[this.selectedAreaIndex];
         let index = 0;
         let shortestDistance = this.width;
@@ -81,9 +79,8 @@ export default class Polygon {
             for (let i = 1; i < selectedArea.points.length; i++) {
                 const distance = this.distanceFromLine(newPoint, selectedArea.points[i - 1], selectedArea.points[i]);
                 const intersectionPoint = this.getClosestPointOnLine(newPoint, selectedArea.points[i - 1], selectedArea.points[i]);
-                console.log(newPoint, selectedArea.points[i - 1], selectedArea.points[i], intersectionPoint, distance, shortestDistance);
+
                 if (distance < shortestDistance && this.pointIsBetween(intersectionPoint, selectedArea.points[i - 1], selectedArea.points[i])) {
-                    console.log('Perfect');
                     index = i;
                     shortestDistance = distance;
                 }
@@ -91,13 +88,11 @@ export default class Polygon {
 
             const distance = this.distanceFromLine(newPoint, selectedArea.points[selectedArea.points.length - 1], selectedArea.points[0]);
             const intersectionPoint = this.getClosestPointOnLine(newPoint, selectedArea.points[selectedArea.points.length - 1], selectedArea.points[0]);
-            console.log(newPoint, selectedArea.points[selectedArea.points.length - 1], selectedArea.points[0], intersectionPoint, distance, shortestDistance);
+
             if (distance < shortestDistance && this.pointIsBetween(intersectionPoint, selectedArea.points[selectedArea.points.length - 1], selectedArea.points[0])) {
                 index = selectedArea.points.length;
                 shortestDistance = distance;
             }
-
-            console.log(index);
 
             selectedArea.points = [
                 ...selectedArea.points.slice(0, index),
@@ -107,53 +102,43 @@ export default class Polygon {
         } else {
             selectedArea.points.push(newPoint);
         }
-        console.log(selectedArea.points);
 
         this.drawAreas(this.areas);
     }
 
     draw(coords) {
-        let g = this.graph.select('g.drawPoly');
-        this.drawingPointsStart = [coords[0], coords[1]];
-        if (g.empty()) {
-            g = this.graph.append('g').attr('class', 'drawPoly');
-        }
-
-        console.log(d3.event.target);
         if (d3.event.target.hasAttribute('is-handle')) {
             return this.closePolygon();
         }
 
-        this.drawingPoints.push(coords);
-        g.select('polyline').remove();
-        const polyline = g.append('polyline')
-            .attr('points', this.drawingPoints)
-            .style('fill', 'none')
-            .attr('stroke', '#000');
-        for (let i = 0; i < this.drawingPoints.length; i++) {
-            g.append('circle')
-                .attr('cx', this.drawingPoints[i][0])
-                .attr('cy', this.drawingPoints[i][1])
-                .attr('r', 4)
-                .attr('fill', 'yellow')
-                .attr('stroke', '#000')
-                .attr('is-handle', 'true')
-                .style({ cursor: 'pointer' });
-        }
+        this.drawingPoints.push(new Point(Math.round(coords[0]), Math.round(coords[1])));
+
+        this.polygonDrawingGroup.select('line').remove();
+        this.polygonDrawingGroup.select('polyline').remove();
+        const polyline = this.polygonDrawingGroup.append('polyline')
+            .attr('points', () => this.drawingPoints.map((d) => [d.x, d.y].join(',')).join(' '));
+
+        const circles = this.polygonDrawingGroup
+            .selectAll('circle')
+            .data(this.drawingPoints, (d) => d.x + '#' + d.y);
+
+        circles.enter()
+            .append('circle')
+            .attr('cx', (d, i) => this.drawingPoints[i].x)
+            .attr('cy', (d, i) => this.drawingPoints[i].y)
+            .attr('r', 4)
+            .attr('is-handle', 'true');
+
+        circles.exit().remove();
     }
 
     closePolygon() {
-        console.log(this.drawingPoints);
-        this.areas.push({
-            uid: this.generateID(),
-            points: this.drawingPoints.map((p) => ({ x: p[0], y: p[1] }))
-        });
+        this.areas.push(new Area({ points: this.drawingPoints }));
         this.selectedAreaIndex = this.areas.length - 1;
-        this.graph.select('g.drawPoly').remove();
+        this.polygonDrawingGroup.selectAll('*').remove();
         this.drawingPoints = [];
-        this.drawingPointsStart = [];
-        console.log(this.areas);
         this.drawAreas(this.areas);
+        this.handlePolygonSelection(this.areas[this.selectedAreaIndex]);
     }
 
     drawAreas(areas) {
@@ -179,10 +164,6 @@ export default class Polygon {
             .append('polygon')
             .merge(polygon)
             .attr('points', (d) => d.map((d) => [d.x, d.y].join(',')).join(' '))
-            .attr('stroke', '#007bff')
-            .attr('stroke-width', 1)
-            .attr('fill', '#007bff')
-            .attr('fill-opacity', 0.25)
             .on('click', (d, i, j) => {
                 d3.event.stopPropagation();
                 const index = areas.findIndex((a) => a.uid === d3.select(j[i].parentNode).datum().uid);
@@ -200,26 +181,25 @@ export default class Polygon {
             .attr('r', 4)
             .attr('cx', (d) => d.x)
             .attr('cy', (d) => d.y)
-            .attr('fill', '#007bff')
-            .on('click', (d, idx, j) => {
+            .on('click', (d, i, j) => {
                 d3.event.stopPropagation();
-                const parentAreaPoints = d3.select(j[idx].parentNode).datum().points;
+                const parentAreaPoints = d3.select(j[i].parentNode).datum().points;
 
-                const i = parentAreaPoints.findIndex((p) => p.x === d.x && p.y === d.y);
+                const index = parentAreaPoints.findIndex((p) => p.x === d.x && p.y === d.y);
 
-                if (i === parentAreaPoints.length) {
+                if (index === parentAreaPoints.length) {
                     parentAreaPoints.pop();
-                } else if (i === 0) {
+                } else if (index === 0) {
                     parentAreaPoints.shift();
                 } else {
-                    parentAreaPoints.splice(i, 1);
+                    parentAreaPoints.splice(index, 1);
                 }
 
                 this.drawAreas(areas);
             })
             .call(d3.drag()
                 .on('start', function (d) {
-                    d3.select(this).classed('active', true)
+                    d3.select(this).classed('active', true);
                 })
                 .on('drag', function (d) {
                     d3.select(this)
@@ -234,16 +214,7 @@ export default class Polygon {
         circles.exit().remove();
     }
 
-    generateID() {
-        const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        let text = "";
-
-        for (let i = 0; i < 5; i++) {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
-
-        return text;
-    }
+    
 
     distance(lineStartPoint, lineEndPoint) {
         return Math.sqrt(Math.pow(lineEndPoint.x - lineStartPoint.x, 2) + Math.pow(lineEndPoint.y - lineStartPoint.y, 2));
@@ -258,18 +229,16 @@ export default class Polygon {
     }
 
     pointIsBetween(point, lineStartPoint, lineEndPoint) {
-        console.log(Math.round(this.distance(lineStartPoint, point)), Math.round(this.distance(point, lineEndPoint)), Math.round(this.distance(lineStartPoint, lineEndPoint)),
-            (Math.round(this.distance(lineStartPoint, point)) + Math.round(this.distance(point, lineEndPoint))) === Math.round(this.distance(lineStartPoint, lineEndPoint)));
         return (Math.round(this.distance(lineStartPoint, point)) + Math.round(this.distance(point, lineEndPoint))) <= (Math.round(this.distance(lineStartPoint, lineEndPoint)) + 1)
             && (Math.round(this.distance(lineStartPoint, point)) + Math.round(this.distance(point, lineEndPoint))) >= (Math.round(this.distance(lineStartPoint, lineEndPoint)) - 1);
     }
 
     getClosestPointOnLine(point, lineStartPoint, lineEndPoint) {
-        const k = ((point.x - lineStartPoint.x) * (lineEndPoint.x - lineStartPoint.x) + (point.y - lineStartPoint.y) * (lineEndPoint.y - lineStartPoint.y))
+        const distance = ((point.x - lineStartPoint.x) * (lineEndPoint.x - lineStartPoint.x) + (point.y - lineStartPoint.y) * (lineEndPoint.y - lineStartPoint.y))
             / (Math.pow(lineEndPoint.x - lineStartPoint.x, 2) + Math.pow(lineEndPoint.y - lineStartPoint.y, 2));
         return {
-            x: lineStartPoint.x + k * (lineEndPoint.x - lineStartPoint.x),
-            y: lineStartPoint.y + k * (lineEndPoint.y - lineStartPoint.y)
+            x: lineStartPoint.x + distance * (lineEndPoint.x - lineStartPoint.x),
+            y: lineStartPoint.y + distance * (lineEndPoint.y - lineStartPoint.y)
         };
     }
 }

@@ -2,8 +2,9 @@
 @import "~summernote/dist/summernote-bs4";
 @import "~codemirror/lib/codemirror";
 
-#floorplan {
+$polygon-blue: #007bff;
 
+#floorplan {
     position: relative;
 
     img {
@@ -21,10 +22,42 @@
     }
 }
 
-circle:hover {
-    cursor: move;
+circle {
+    fill: $polygon-blue;
+
+    &:hover {
+        cursor: move;
+    }
 }
 
-polygon:hover {
-    cursor: pointer;
+line {
+    stroke: $polygon-blue;
+    stroke-width: 1;
+}
+
+polygon {
+    fill: $polygon-blue;
+    fill-opacity: 0.25;
+    stroke: $polygon-blue;
+    stroke-width: 1;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.polygon-drawing {
+    circle {
+        cursor: pointer;
+    }
+
+    line {
+        pointer-events: none;
+    }
+
+    polyline {
+        fill: none;
+        stroke: $polygon-blue;
+        pointer-events: none;
+    }
 }
