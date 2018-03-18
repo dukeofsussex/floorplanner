@@ -2,13 +2,27 @@
 @import "~summernote/dist/summernote-bs4";
 @import "~codemirror/lib/codemirror";
 
-$polygon-blue: #007bff;
+$polygon-default: #007bff;
+$polygon-active: #28a745;
+
+body {
+    margin-top: 60px; // Account for fixed navbar
+}
+
+#show-area {
+    display: none;
+}
+
+#file-import {
+    display: none;
+}
 
 #floorplan {
     position: relative;
 
     img {
         width: 100%;
+        min-height: 500px;
     }
 
     svg {
@@ -22,27 +36,44 @@ $polygon-blue: #007bff;
     }
 }
 
+#tooltip {
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    z-index: 1000;
+}
+
 circle {
-    fill: $polygon-blue;
+    fill: $polygon-default;
 
     &:hover {
         cursor: move;
     }
+
+    &.active {
+        fill: $polygon-active;
+        stroke: $polygon-active;
+    }
 }
 
 line {
-    stroke: $polygon-blue;
+    stroke: $polygon-default;
     stroke-width: 1;
 }
 
 polygon {
-    fill: $polygon-blue;
+    fill: $polygon-default;
     fill-opacity: 0.25;
-    stroke: $polygon-blue;
+    stroke: $polygon-default;
     stroke-width: 1;
 
     &:hover {
         cursor: pointer;
+    }
+
+    &.active {
+        fill: $polygon-active;
+        stroke: $polygon-active;
     }
 }
 
@@ -61,7 +92,7 @@ polygon {
 
     polyline {
         fill: none;
-        stroke: $polygon-blue;
+        stroke: $polygon-default;
         pointer-events: none;
     }
 }

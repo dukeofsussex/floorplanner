@@ -10,11 +10,11 @@ const MARGIN = {
 };
 
 export default class Polygon {
-    constructor(svgElement, handlePolygonSelection) {
+    constructor(svgElement, handleAreaSelection) {
         const self = this;
 
         this.svgElement = svgElement;
-        this.handlePolygonSelection = handlePolygonSelection;
+        this.handleAreaSelection = handleAreaSelection;
 
         this.svg = d3.select(svgElement);
 
@@ -34,8 +34,8 @@ export default class Polygon {
             .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
 
         this.graph.append('rect')
-            .attr('width', this.width)
-            .attr('height', this.height)
+            .attr('width', '100%')
+            .attr('height', '100%')
             .attr('fill', 'transparent');
 
         this.graph.on('click', function () {
@@ -66,7 +66,8 @@ export default class Polygon {
 
         this.tooltip = d3.select('body')
             .append('div')
-            .attr('class', 'tooltip')
+            .attr('id', 'tooltip')
+            .attr('class', 'card')
             .style('opacity', 0);
     }
 
@@ -139,7 +140,7 @@ export default class Polygon {
         this.polygonDrawingGroup.selectAll('*').remove();
         this.drawingPoints = [];
         this.drawAreas(this.areas, this.editing);
-        this.handlePolygonSelection(this.areas[this.selectedAreaIndex]);
+        this.handleAreaSelection(this.areas[this.selectedAreaIndex]);
     }
 
     drawAreas(areas, editing) {
@@ -158,20 +159,47 @@ export default class Polygon {
             .attr('class', 'area');
 
         const polygon = individualAreaGroup.selectAll('polygon')
-            .data((d) => [d.points]);
+            .data((d, i) => {
+                return [{ index: i, hoverDesc: d.hoverDescription, points: d.points }];
+            });
 
         polygon.exit().remove();
 
         polygon.enter()
             .append('polygon')
             .merge(polygon)
-            .attr('points', (d) => d.map((d) => [d.x, d.y].join(',')).join(' '))
+            .attr('points', (d) => d.points.map((d) => [d.x, d.y].join(',')).join(' '))
+            .attr('class', (d) => d.index === this.selectedAreaIndex ? 'active' : '')
             .on('click', (d, i, j) => {
                 d3.event.stopPropagation();
-                const index = areas.findIndex((a) => a.uid === d3.select(j[i].parentNode).datum().uid);
-                this.selectedAreaIndex = (this.selectedAreaIndex === index) ? -1 : index;
+                this.selectedAreaIndex = (this.selectedAreaIndex === d.index) ? -1 : d.index;
                 this.drawAreas(areas, this.editing);
-                this.handlePolygonSelection(d3.select(j[i].parentNode).datum());
+                this.handleAreaSelection(d3.select(j[i].parentNode).datum());
+            })
+            .on('mouseover', (d) => {
+                if (this.editing) {
+                    return;
+                }
+
+                this.tooltip.html(d.hoverDesc);
+                this.tooltip.style('opacity', 1);
+            })
+            .on('mousemove', function (d) {
+                if (this.editing) {
+                    return;
+                }
+
+                const coords = d3.mouse(this);
+
+                self.tooltip.style('left', `${coords[0] + 15}px`) // 15 pixels for the row margin
+                    .style('top', `${coords[1] + (self.tooltip.node().getBoundingClientRect().height / 2)}px`);
+            })
+            .on('mouseout', (d) => {
+                if (this.editing) {
+                    return;
+                }
+
+                this.tooltip.style('opacity', 0);
             });
 
         const circles = individualAreaGroup.selectAll('circle')
@@ -183,25 +211,19 @@ export default class Polygon {
             .attr('r', 4)
             .attr('cx', (d) => d.x)
             .attr('cy', (d) => d.y)
+            .attr('class', 'active') // These circles are only drawn for the selected polygon
             .on('click', (d, i, j) => {
                 d3.event.stopPropagation();
                 const parentAreaPoints = d3.select(j[i].parentNode).datum().points;
 
                 const index = parentAreaPoints.findIndex((p) => p.x === d.x && p.y === d.y);
-
-                if (index === parentAreaPoints.length) {
-                    parentAreaPoints.pop();
-                } else if (index === 0) {
-                    parentAreaPoints.shift();
-                } else {
-                    parentAreaPoints.splice(index, 1);
-                }
+                parentAreaPoints.splice(index, 1);
 
                 this.drawAreas(areas, this.editing);
             })
             .call(d3.drag()
                 .on('start', function (d) {
-                    d3.select(this).classed('active', true);
+                    d3.select(this).classed('drag', true);
                 })
                 .on('drag', function (d) {
                     d3.select(this)
@@ -210,7 +232,7 @@ export default class Polygon {
                     self.drawAreas(areas, self.editing);
                 })
                 .on('end', function (d) {
-                    d3.select(this).classed('active', false);
+                    d3.select(this).classed('drag', false);
                 }));
 
         circles.exit().remove();

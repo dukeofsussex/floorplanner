@@ -31991,14 +31991,14 @@ var FloorPlanner = function () {
     function FloorPlanner() {
         _classCallCheck(this, FloorPlanner);
 
-        $('#summernoteAreaDesc').summernote({
+        $('#area-desc').summernote({
             height: 150, // set editor height
             minHeight: null, // set minimum height of editor
             maxHeight: null, // set maximum height of editor
             focus: false // set focus to editable area after initializing summernote
         });
 
-        $('#summernoteAreaHoverDesc').summernote({
+        $('#area-hover-desc').summernote({
             height: 70, // set editor height
             minHeight: null, // set minimum height of editor
             maxHeight: null, // set maximum height of editor
@@ -32006,7 +32006,7 @@ var FloorPlanner = function () {
             toolbar: [['media', ['picture', 'link', 'video']]]
         });
 
-        $('#summernoteFloorDesc').summernote({
+        $('#floor-desc').summernote({
             height: 250, // set editor height
             minHeight: null, // set minimum height of editor
             maxHeight: null, // set maximum height of editor
