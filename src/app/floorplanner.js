@@ -149,8 +149,8 @@ export default class FloorPlanner {
             this.domElements.EDIT_AREA_DESC.summernote('code', area.description);
             this.domElements.EDIT_AREA_HOVER_DESC.summernote('code', area.hoverDescription);
         } else {
-            this.domElements.SHOW_AREA_NAME.text(area.name);
-            this.domElements.SHOW_AREA_DESC.text(area.description);
+            this.domElements.SHOW_AREA_NAME.html(area.name);
+            this.domElements.SHOW_AREA_DESC.html(area.description);
         }
     }
 
@@ -159,8 +159,8 @@ export default class FloorPlanner {
             this.domElements.EDIT_FLOOR_NAME.val(this.floor.name);
             this.domElements.EDIT_FLOOR_DESC.summernote('code', this.floor.description);
         } else {
-            this.domElements.SHOW_FLOOR_NAME.text(this.floor.name);
-            this.domElements.SHOW_FLOOR_DESC.text(this.floor.description);
+            this.domElements.SHOW_FLOOR_NAME.html(this.floor.name);
+            this.domElements.SHOW_FLOOR_DESC.html(this.floor.description);
         }
     }
 
