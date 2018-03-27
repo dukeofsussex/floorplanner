@@ -216,7 +216,7 @@ export default class FloorPlanner {
         this.domElements.EDIT_AREA_HOVER_DESC.summernote({
             height: 70,
             focus: false,
-            toolbar: [['media', ['picture', 'link', 'video']]],
+            toolbar: [['media', ['picture']]],
             callbacks: {
                 onBlur: () => {
                     const index = this.floor.areas.findIndex((a) => a.uid === this.selectedArea.uid);
