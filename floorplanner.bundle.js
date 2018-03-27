@@ -32108,6 +32108,8 @@ var FloorPlanner = function () {
         value: function addFloor() {
             var _this2 = this;
 
+            this.deselectAllPolys();
+
             this.selectedFloorIndex = this.storage.addFloor(new _object.Floor({ image: this.domElements.FLOOR_IMAGE_URL.val() }));
             this.init();
 
@@ -32115,6 +32117,22 @@ var FloorPlanner = function () {
             setTimeout(function () {
                 return _this2.domElements.FLOOR_IMAGE_URL.val('');
             }, 250);
+        }
+    }, {
+        key: 'deselectAllPolys',
+        value: function deselectAllPolys() {
+            // Added by Rob
+            this.handleAreaSelection(this.selectedArea);
+
+            if (this.editing) {
+                this.toggleEditMode();
+            }
+            this.polygon.selectedAreaIndex = -1;
+            this.polygon.editing = false;
+
+            this.updateAreaFields(this.selectedArea);
+            this.updateFloorFields();
+            this.polygon.drawAreas(this.floor.areas, this.editing);
         }
     }, {
         key: 'handleExport',
@@ -32138,6 +32156,8 @@ var FloorPlanner = function () {
         key: 'handleImport',
         value: function handleImport() {
             var _this3 = this;
+
+            this.deselectAllPolys();
 
             var files = this.domElements.FILE_IMPORT[0].files;
 
@@ -32177,6 +32197,7 @@ var FloorPlanner = function () {
     }, {
         key: 'handleFloorDelete',
         value: function handleFloorDelete() {
+            this.deselectAllPolys();
             this.storage.deleteFloor(this.selectedFloorIndex);
             this.selectedFloorIndex = 0;
             this.init();
@@ -32204,6 +32225,7 @@ var FloorPlanner = function () {
             this.updateAreaFields(this.selectedArea);
             this.updateFloorFields();
             this.polygon.drawAreas(this.floor.areas, this.editing);
+            this.storage.updateFloor(this.floor, this.selectedFloorIndex);
         }
     }, {
         key: 'updateAreaFields',
@@ -57869,13 +57891,16 @@ var Storage = function () {
     function Storage() {
         _classCallCheck(this, Storage);
 
-        this.floors = [{ "image": "https://i.imgur.com/Y9cDiqE.png", "name": "Riverside Main Floor", "description": "Just some random wacky description", "areas": [{ "uid": "ajf9v0", "points": [{ "x": 52, "y": 92 }, { "x": 50, "y": 151 }, { "x": 123, "y": 149 }, { "x": 125, "y": 91 }], "name": "Back stairwell", "description": "Stairs", "hoverDescription": "Hover 'n stuff" }, { "uid": "ufnf12", "points": [{ "x": 450, "y": 250 }, { "x": 700, "y": 250 }, { "x": 700, "y": 275 }, { "x": 450, "y": 275 }], "name": "Some botched bridge stairwell", "description": "Woopsee", "hoverDescription": "Fucked this one right up" }] }];
+        this.localStorageKey = 'floorplanner_floors';
+
+        if (localStorage.getItem(this.localStorageKey) === null) this.floors = [{ "image": "https://i.imgur.com/Y9cDiqE.png", "name": "Riverside Main Floor", "description": "Just some random wacky description", "areas": [{ "uid": "ajf9v0", "points": [{ "x": 52, "y": 92 }, { "x": 50, "y": 151 }, { "x": 123, "y": 149 }, { "x": 125, "y": 91 }], "name": "Back stairwell", "description": "Stairs", "hoverDescription": "Hover 'n stuff" }, { "uid": "ufnf12", "points": [{ "x": 450, "y": 250 }, { "x": 700, "y": 250 }, { "x": 700, "y": 275 }, { "x": 450, "y": 275 }], "name": "Some botched bridge stairwell", "description": "Woopsee", "hoverDescription": "Fucked this one right up" }] }];else this.floors = JSON.parse(localStorage.getItem(this.localStorageKey));
     }
 
     _createClass(Storage, [{
         key: "import",
         value: function _import(floors) {
             this.floors = JSON.parse(floors);
+            this.saveToLocalStorage();
         }
     }, {
         key: "export",
@@ -57897,12 +57922,22 @@ var Storage = function () {
         key: "updateFloor",
         value: function updateFloor(floor, index) {
             this.floors[index] = floor;
-            //localStorage.setItem('floorplanner_floors', JSON.stringify(this.floors));
+            this.saveToLocalStorage();
+        }
+    }, {
+        key: "saveToLocalStorage",
+        value: function saveToLocalStorage() {
+            localStorage.setItem(this.localStorageKey, JSON.stringify(this.floors));
         }
     }, {
         key: "deleteFloor",
         value: function deleteFloor(index) {
             this.floors.splice(index, 1);
+        }
+    }, {
+        key: "deleteLocalStorage",
+        value: function deleteLocalStorage() {
+            localStorage.removeItem(this.localStorageKey);
         }
     }]);
 
