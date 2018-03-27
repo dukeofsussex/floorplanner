@@ -41,6 +41,7 @@ body {
     width: 250px;
     height: 250px;
     z-index: 1000;
+    pointer-events: none;
 }
 
 circle {
