@@ -104,6 +104,8 @@ export default class FloorPlanner {
     }
 
     handleImport() {
+        this.deselectAllPolys();
+        
         const files = this.domElements.FILE_IMPORT[0].files;
 
         if (!files.length > 0) {
