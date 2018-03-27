@@ -38,10 +38,10 @@ body {
 
 #tooltip {
     position: absolute;
-    width: 250px;
-    height: 250px;
+    max-width: 350px;
     z-index: 1000;
     pointer-events: none;
+    font-size: 12px;
 }
 
 circle {

@@ -191,8 +191,11 @@ export default class Polygon {
 
                 const coords = d3.mouse(this);
 
-                self.tooltip.style('left', `${coords[0] + 15}px`) // 15 pixels for the row margin
-                    .style('top', `${coords[1] + (self.tooltip.node().getBoundingClientRect().height / 2)}px`);
+                // self.tooltip.style('left', `${coords[0] + 15}px`) // 15 pixels for the row margin
+                //     .style('top', `${coords[1] + (self.tooltip.node().getBoundingClientRect().height / 2)}px`);
+                
+                self.tooltip.style('left', `${coords[0] + 25}px`) // Rob version just sets it away from the corner
+                    .style('top', `${coords[1] + 100}px`);
             })
             .on('mouseout', (d) => {
                 if (this.editing) {
