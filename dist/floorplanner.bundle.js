@@ -32278,7 +32278,7 @@ var FloorPlanner = function () {
             });
 
             this.domElements.EDIT_AREA_DESC.summernote({
-                height: 150,
+                height: 275,
                 focus: false,
                 callbacks: {
                     onBlur: function onBlur() {
@@ -32294,7 +32294,7 @@ var FloorPlanner = function () {
             this.domElements.EDIT_AREA_HOVER_DESC.summernote({
                 height: 70,
                 focus: false,
-                toolbar: [['media', ['picture', 'link', 'video']]],
+                toolbar: [['media', ['picture']]],
                 callbacks: {
                     onBlur: function onBlur() {
                         var index = _this6.floor.areas.findIndex(function (a) {
@@ -44233,8 +44233,11 @@ var Polygon = function () {
 
                 var coords = d3.mouse(this);
 
-                self.tooltip.style('left', coords[0] + 15 + 'px') // 15 pixels for the row margin
-                .style('top', coords[1] + self.tooltip.node().getBoundingClientRect().height / 2 + 'px');
+                // self.tooltip.style('left', `${coords[0] + 15}px`) // 15 pixels for the row margin
+                //     .style('top', `${coords[1] + (self.tooltip.node().getBoundingClientRect().height / 2)}px`);
+
+                self.tooltip.style('left', coords[0] + 25 + 'px') // Rob version just sets it away from the corner
+                .style('top', coords[1] + 100 + 'px');
             }).on('mouseout', function (d) {
                 if (_this2.editing) {
                     return;
