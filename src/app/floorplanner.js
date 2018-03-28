@@ -96,7 +96,14 @@ export default class FloorPlanner {
 
         const element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(this.storage.export()));
-        element.setAttribute('download', 'floorplan.json');
+
+        let exportName = 'floorplan'
+        // Rob says "I don't know how to properly check empties here"
+        if (this.floor !== null && this.floor.name !== null && this.floor.name !== "") {
+            exportName = this.floor.name;
+        }
+
+        element.setAttribute('download', exportName + '.json');
 
         element.style.display = 'none';
         document.body.appendChild(element);
