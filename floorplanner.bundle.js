@@ -32122,17 +32122,20 @@ var FloorPlanner = function () {
         key: 'deselectAllPolys',
         value: function deselectAllPolys() {
             // Added by Rob
-            this.handleAreaSelection(this.selectedArea);
 
-            if (this.editing) {
-                this.toggleEditMode();
+            if (this.floor !== null) {
+                this.handleAreaSelection(this.selectedArea);
+
+                if (this.editing) {
+                    this.toggleEditMode();
+                }
+                this.polygon.selectedAreaIndex = -1;
+                this.polygon.editing = false;
+
+                this.updateAreaFields(this.selectedArea);
+                this.updateFloorFields();
+                this.polygon.drawAreas(this.floor.areas, this.editing);
             }
-            this.polygon.selectedAreaIndex = -1;
-            this.polygon.editing = false;
-
-            this.updateAreaFields(this.selectedArea);
-            this.updateFloorFields();
-            this.polygon.drawAreas(this.floor.areas, this.editing);
         }
     }, {
         key: 'handleExport',
@@ -32224,6 +32227,9 @@ var FloorPlanner = function () {
             this.domElements.SHOW_AREA.toggle(!this.editing && this.selectedArea.uid.length > 0);
             this.updateAreaFields(this.selectedArea);
             this.updateFloorFields();
+
+            if (this.floor === null) return;
+
             this.polygon.drawAreas(this.floor.areas, this.editing);
             this.storage.updateFloor(this.floor, this.selectedFloorIndex);
         }
@@ -32246,6 +32252,9 @@ var FloorPlanner = function () {
     }, {
         key: 'updateFloorFields',
         value: function updateFloorFields() {
+
+            if (this.floor === null) return;
+
             if (this.editing) {
                 this.domElements.EDIT_FLOOR_NAME.val(this.floor.name);
                 this.domElements.EDIT_FLOOR_DESC.summernote('code', this.floor.description);
