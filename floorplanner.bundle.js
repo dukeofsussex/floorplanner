@@ -32126,9 +32126,10 @@ var FloorPlanner = function () {
             if (this.floor !== null) {
                 this.handleAreaSelection(this.selectedArea);
 
-                if (this.editing) {
-                    this.toggleEditMode();
-                }
+                // Don't leave edit mode when deselecting anymore
+                // if (this.editing) {
+                //     this.toggleEditMode();
+                // }
                 this.polygon.selectedAreaIndex = -1;
                 this.polygon.editing = false;
 
@@ -32185,8 +32186,9 @@ var FloorPlanner = function () {
                 return a.uid === _this4.selectedArea.uid;
             });
             this.floor.areas.splice(index, 1);
-            this.domElements.EDIT_AREA.toggle(false);
-            this.selectedArea = { uid: '' };
+            // this.domElements.EDIT_AREA.toggle(false);
+            // this.selectedArea = { uid: '' };
+            this.deselectAllPolys();
             this.polygon.drawAreas(this.floor.areas, this.editing);
         }
     }, {
@@ -32228,7 +32230,9 @@ var FloorPlanner = function () {
             this.updateAreaFields(this.selectedArea);
             this.updateFloorFields();
 
-            if (this.floor === null) return;
+            if (this.floor === null) {
+                return;
+            }
 
             this.polygon.drawAreas(this.floor.areas, this.editing);
             this.storage.updateFloor(this.floor, this.selectedFloorIndex);
@@ -32253,7 +32257,9 @@ var FloorPlanner = function () {
         key: 'updateFloorFields',
         value: function updateFloorFields() {
 
-            if (this.floor === null) return;
+            if (this.floor === null) {
+                return;
+            }
 
             if (this.editing) {
                 this.domElements.EDIT_FLOOR_NAME.val(this.floor.name);
@@ -44240,13 +44246,8 @@ var Polygon = function () {
                     return;
                 }
 
-                var coords = d3.mouse(this);
-
-                // self.tooltip.style('left', `${coords[0] + 15}px`) // 15 pixels for the row margin
-                //     .style('top', `${coords[1] + (self.tooltip.node().getBoundingClientRect().height / 2)}px`);
-
-                self.tooltip.style('left', coords[0] + 25 + 'px') // Rob version just sets it away from the corner
-                .style('top', coords[1] + 100 + 'px');
+                self.tooltip.style('left', d3.event.clientX + 15 + 'px') // Rob version just sets it away from the corner
+                .style('top', d3.event.clientY - 10 + 'px');
             }).on('mouseout', function (d) {
                 if (_this2.editing) {
                     return;
