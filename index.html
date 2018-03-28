@@ -15,7 +15,7 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-white" href="#" id="fileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                       aria-expanded="false">
+                        aria-expanded="false">
                         File
                     </a>
                     <div class="dropdown-menu" aria-labelledby="fileDropdown">
@@ -26,7 +26,7 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-white" href="#" id="editDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                       aria-expanded="false">
+                        aria-expanded="false">
                         Floors
                     </a>
                     <div class="dropdown-menu" aria-labelledby="editDropdown">
@@ -37,15 +37,35 @@
                     </div>
                 </li>
             </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <button type="button" class="btn navbar-btn btn-outline-primary toggle-mode show">Edit</button>
+                    <button type="button" class="btn navbar-btn btn-outline-success toggle-mode edit">Save</button>
+                </li>
+            </ul>
         </nav>
     </div>
     <div id="interface" class="container-fluid bg-light">
         <div class="row">
             <div class="col-sm-8">
-                <h4 id="show-floor-name"></h4>
+                <div class="card-header" style="background: #f8f9fa" ;>
+                    <h5 id="show-floor-name"></h5>
+                </div>
                 <div id="floorplan">
                     <img id="floor-image">
                     <svg></svg>
+                </div>
+                <div class="card show">
+                    <div id="show-floor-desc" class="card-body"></div>
+                </div>
+                <div class="edit">
+                    <div class="form-group">
+                        <input type="text" id="edit-floor-name" class="form-control" placeholder="Floor title" aria-label="Floor title">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-floor-desc">Description:</label>
+                        <div id="edit-floor-desc"></div>
+                    </div>
                 </div>
             </div>
             <div class="col-sm-4">
@@ -72,26 +92,6 @@
                     </div>
                     <button id="delete-area" type="button" class="btn btn-outline-danger">Delete Area</button>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-8">
-                <div class="card show">
-                    <div id="show-floor-desc" class="card-body"></div>
-                </div>
-                <div class="edit">
-                    <div class="form-group">
-                        <input type="text" id="edit-floor-name" class="form-control" placeholder="Floor title" aria-label="Floor title">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-floor-desc">Description:</label>
-                        <div id="edit-floor-desc"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <button type="button" class="btn btn-block btn-outline-primary toggle-mode show">Edit Floor Details</button>
-                <button type="button" class="btn btn-block btn-outline-success toggle-mode edit">Save</button>
             </div>
         </div>
     </div>
