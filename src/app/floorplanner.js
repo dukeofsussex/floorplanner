@@ -47,7 +47,7 @@ export default class FloorPlanner {
         this.selectedFloorIndex = 0;
 
         this.initListeners();
-        
+
     }
 
     init() {
@@ -63,7 +63,7 @@ export default class FloorPlanner {
 
     addFloor() {
         this.deselectAllPolys();
-        
+
         this.selectedFloorIndex = this.storage.addFloor(new Floor({ image: this.domElements.FLOOR_IMAGE_URL.val() }));
         this.init();
 
@@ -71,19 +71,21 @@ export default class FloorPlanner {
         setTimeout(() => this.domElements.FLOOR_IMAGE_URL.val(''), 250);
     }
 
-    deselectAllPolys(){ // Added by Rob
-        this.handleAreaSelection(this.selectedArea);
-        
-        if(this.editing)
-        {
-        this.toggleEditMode();
-        }
-        this.polygon.selectedAreaIndex = -1;
-        this.polygon.editing = false;
+    deselectAllPolys() { // Added by Rob
 
-        this.updateAreaFields(this.selectedArea);
-        this.updateFloorFields();
-        this.polygon.drawAreas(this.floor.areas, this.editing);
+        if (this.floor !== null) {
+            this.handleAreaSelection(this.selectedArea);
+
+            if (this.editing) {
+                this.toggleEditMode();
+            }
+            this.polygon.selectedAreaIndex = -1;
+            this.polygon.editing = false;
+
+            this.updateAreaFields(this.selectedArea);
+            this.updateFloorFields();
+            this.polygon.drawAreas(this.floor.areas, this.editing);
+        }
     }
 
     handleExport() {
@@ -105,7 +107,7 @@ export default class FloorPlanner {
 
     handleImport() {
         this.deselectAllPolys();
-        
+
         const files = this.domElements.FILE_IMPORT[0].files;
 
         if (!files.length > 0) {
@@ -156,6 +158,10 @@ export default class FloorPlanner {
         this.domElements.SHOW_AREA.toggle(!this.editing && this.selectedArea.uid.length > 0);
         this.updateAreaFields(this.selectedArea);
         this.updateFloorFields();
+
+        if(this.floor === null)
+        return;
+        
         this.polygon.drawAreas(this.floor.areas, this.editing);
         this.storage.updateFloor(this.floor, this.selectedFloorIndex);
     }
@@ -176,6 +182,10 @@ export default class FloorPlanner {
     }
 
     updateFloorFields() {
+
+        if(this.floor === null)
+        return;
+        
         if (this.editing) {
             this.domElements.EDIT_FLOOR_NAME.val(this.floor.name);
             this.domElements.EDIT_FLOOR_DESC.summernote('code', this.floor.description);
@@ -245,7 +255,7 @@ export default class FloorPlanner {
         this.domElements.FLOOR_LOADER.on('click', () => this.addFloor());
 
         this.domElements.IMPORT.on('click', () => this.domElements.FILE_IMPORT.click());
-        
+
         this.domElements.FILE_IMPORT.change(() => this.handleImport());
 
         this.domElements.EXPORT.on('click', () => this.handleExport());
