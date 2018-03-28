@@ -10,7 +10,20 @@ body {
 }
 
 #show-area {
+    position: fixed;
     display: none;
+    overflow-y: scroll;
+    height: calc(100vh - 65px);
+    width: calc(34vw - 35px);
+
+}
+
+#left-side {
+    position: fixed;
+    overflow-y: scroll;
+    height: calc(100vh - 65px);
+    width: 66vw;
+    padding-right: 10px;
 }
 
 #file-import {
@@ -22,7 +35,7 @@ body {
 
     img {
         width: 100%;
-        min-height: 500px;
+        // min-height: 500px;
     }
 
     svg {

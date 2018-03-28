@@ -76,9 +76,10 @@ export default class FloorPlanner {
         if (this.floor !== null) {
             this.handleAreaSelection(this.selectedArea);
 
-            if (this.editing) {
-                this.toggleEditMode();
-            }
+            // Don't leave edit mode when deselecting anymore
+            // if (this.editing) {
+            //     this.toggleEditMode();
+            // }
             this.polygon.selectedAreaIndex = -1;
             this.polygon.editing = false;
 
@@ -126,8 +127,9 @@ export default class FloorPlanner {
     handleAreaDelete() {
         const index = this.floor.areas.findIndex((a) => a.uid === this.selectedArea.uid);
         this.floor.areas.splice(index, 1);
-        this.domElements.EDIT_AREA.toggle(false);
-        this.selectedArea = { uid: '' };
+        // this.domElements.EDIT_AREA.toggle(false);
+        // this.selectedArea = { uid: '' };
+        this.deselectAllPolys();
         this.polygon.drawAreas(this.floor.areas, this.editing);
     }
 
@@ -159,9 +161,10 @@ export default class FloorPlanner {
         this.updateAreaFields(this.selectedArea);
         this.updateFloorFields();
 
-        if(this.floor === null)
-        return;
-        
+        if (this.floor === null) {
+            return;
+        }
+
         this.polygon.drawAreas(this.floor.areas, this.editing);
         this.storage.updateFloor(this.floor, this.selectedFloorIndex);
     }
@@ -183,9 +186,10 @@ export default class FloorPlanner {
 
     updateFloorFields() {
 
-        if(this.floor === null)
-        return;
-        
+        if (this.floor === null) {
+            return;
+        }
+
         if (this.editing) {
             this.domElements.EDIT_FLOOR_NAME.val(this.floor.name);
             this.domElements.EDIT_FLOOR_DESC.summernote('code', this.floor.description);

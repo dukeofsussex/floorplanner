@@ -48,23 +48,25 @@
     <div id="interface" class="container-fluid bg-light">
         <div class="row">
             <div class="col-sm-8">
-                <div class="card-header" style="background: #f8f9fa" ;>
-                    <h5 id="show-floor-name"></h5>
-                </div>
-                <div id="floorplan">
-                    <img id="floor-image">
-                    <svg></svg>
-                </div>
-                <div class="card show">
-                    <div id="show-floor-desc" class="card-body"></div>
-                </div>
-                <div class="edit">
-                    <div class="form-group">
-                        <input type="text" id="edit-floor-name" class="form-control" placeholder="Floor title" aria-label="Floor title">
+                <div id="left-side">
+                    <div class="card-header" style="background: #f8f9fa" ;>
+                        <h5 id="show-floor-name"></h5>
                     </div>
-                    <div class="form-group">
-                        <label for="edit-floor-desc">Description:</label>
-                        <div id="edit-floor-desc"></div>
+                    <div id="floorplan">
+                        <img id="floor-image">
+                        <svg viewBox="0 0 600 600"></svg>
+                    </div>
+                    <div class="card show">
+                        <div id="show-floor-desc" class="card-body"></div>
+                    </div>
+                    <div class="edit">
+                        <div class="form-group">
+                            <input type="text" id="edit-floor-name" class="form-control" placeholder="Floor title" aria-label="Floor title">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-floor-desc">Description:</label>
+                            <div id="edit-floor-desc"></div>
+                        </div>
                     </div>
                 </div>
             </div>
