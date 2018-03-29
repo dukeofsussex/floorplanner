@@ -9,21 +9,53 @@ body {
     margin-top: 60px; // Account for fixed navbar
 }
 
-#show-area {
-    position: fixed;
-    display: none;
-    overflow-y: scroll;
+#right-side {
+    // position: fixed;
+    // display: none;
+    overflow-y: hidden;
     height: calc(100vh - 65px);
-    width: calc(34vw - 35px);
+    width: 100%;//calc(34vw - 35px);
 
 }
 
-#left-side {
-    position: fixed;
+#show-area {
+    // position: fixed;
+    display: none;
     overflow-y: scroll;
+    height:100%;
+    width:100%;
+    // height: calc(100vh - 65px);
+    // width: calc(34vw - 35px);
+    // padding: 10px;
+}
+#left-show-area {
+    // position: fixed;
+    overflow-y: scroll;
+    height:100%;
+    width:100%;
+    // height: calc(100vh - 65px);
+    // width: calc(34vw - 35px);
+    // padding: 10px;
+}
+
+#edit-area {
+    // position: fixed;
+    display: none;
+    overflow-y: scroll;
+    height:100%;
+    width:100%;
+    // height: calc(100vh - 65px);
+    // width: calc(34vw - 35px);
+    // padding: 10px;
+}
+
+#left-side {
+    // position: fixed;
+    overflow-y: hidden;
     height: calc(100vh - 65px);
-    width: 66vw;
-    padding-right: 10px;
+    // width: 66vw;
+    width: 100%;//calc(34vw - 35px);
+    // padding-right: 10px;
 }
 
 #file-import {

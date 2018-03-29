@@ -47,20 +47,22 @@
     </div>
     <div id="interface" class="container-fluid bg-light">
         <div class="row">
-            <div class="col-sm-8">
-                <div id="left-side">
-                    <div class="card-header" style="background: #f8f9fa" ;>
+            <div id="left-side" class="col-sm-8">
+                <div id="left-show-area" class="card">
+                    <div class="card-header show">
                         <h5 id="show-floor-name"></h5>
+                    </div>
+                    <div style="background: #ffcdcd" class="card-header edit">
+                        <h5>Editing</h5>
                     </div>
                     <div id="floorplan">
                         <img id="floor-image">
                         <svg viewBox="0 0 920 690"></svg>
                     </div>
-                    <div class="card show">
-                        <div id="show-floor-desc" class="card-body"></div>
-                    </div>
+                    <div id="show-floor-desc" class="card-body show"></div>
                     <div class="edit">
                         <div class="form-group">
+                            <label for="edit-floor-name">Floor Name:</label>
                             <input type="text" id="edit-floor-name" class="form-control" placeholder="Floor title" aria-label="Floor title">
                         </div>
                         <div class="form-group">
@@ -70,16 +72,19 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4">
-                <div id="show-area" class="card show">
-                    <div class="card-header">
+            <div id="right-side" class="col-sm-4">
+                <div id="show-area" class="card">
+                    <div class="card-header show">
                         <h5 id="show-area-name">Area name</h5>
                     </div>
-                    <div id="show-area-desc" class="card-body">
+                    <div id="show-area-desc" class="card-body show">
                         Area Description
                     </div>
                 </div>
-                <div id="edit-area" class="edit">
+                <div id="edit-area" class="edit card">
+                    <div style="background: #ffcdcd" class="card-header">
+                        <h5>Editing Area</h5>
+                    </div>
                     <div class="form-group">
                         <label for="edit-area-name">Area Name:</label>
                         <input type="text" id="edit-area-name" class="form-control">
@@ -94,6 +99,7 @@
                     </div>
                     <button id="delete-area" type="button" class="btn btn-outline-danger">Delete Area</button>
                 </div>
+
             </div>
         </div>
     </div>

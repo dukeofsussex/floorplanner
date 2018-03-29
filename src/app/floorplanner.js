@@ -223,7 +223,7 @@ export default class FloorPlanner {
         })
 
         this.domElements.EDIT_AREA_DESC.summernote({
-            height: 275,
+            height: 200,
             focus: false,
             callbacks: {
                 onBlur: () => {
@@ -253,7 +253,7 @@ export default class FloorPlanner {
         });
 
         this.domElements.EDIT_FLOOR_DESC.summernote({
-            height: 250,
+            height: 260,
             focus: false,
             callbacks: {
                 onBlur: () => {
