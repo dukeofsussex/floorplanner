@@ -60,7 +60,7 @@
                         <svg viewBox="0 0 920 690"></svg>
                     </div>
                     <div id="show-floor-desc" class="card-body show"></div>
-                    <div class="edit">
+                    <div class="edit edit-card-body">
                         <div class="form-group">
                             <label for="edit-floor-name">Floor Name:</label>
                             <input type="text" id="edit-floor-name" class="form-control" placeholder="Floor title" aria-label="Floor title">
@@ -85,19 +85,21 @@
                     <div style="background: #ffcdcd" class="card-header">
                         <h5>Editing Area</h5>
                     </div>
-                    <div class="form-group">
-                        <label for="edit-area-name">Area Name:</label>
-                        <input type="text" id="edit-area-name" class="form-control">
+                    <div class="edit-card-body">
+                        <div class="form-group">
+                            <label for="edit-area-name">Area Name:</label>
+                            <input type="text" id="edit-area-name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-area-desc">Description:</label>
+                            <div id="edit-area-desc"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-area-hover-desc">Hover Description:</label>
+                            <div id="edit-area-hover-desc"></div>
+                        </div>
+                        <button id="delete-area" type="button" class="btn btn-outline-danger">Delete Area</button>
                     </div>
-                    <div class="form-group">
-                        <label for="edit-area-desc">Description:</label>
-                        <div id="edit-area-desc"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-area-hover-desc">Hover Description:</label>
-                        <div id="edit-area-hover-desc"></div>
-                    </div>
-                    <button id="delete-area" type="button" class="btn btn-outline-danger">Delete Area</button>
                 </div>
 
             </div>
