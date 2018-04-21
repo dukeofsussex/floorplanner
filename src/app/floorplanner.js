@@ -134,16 +134,14 @@ export default class FloorPlanner {
     handleAreaDelete() {
         const index = this.floor.areas.findIndex((a) => a.uid === this.selectedArea.uid);
         this.floor.areas.splice(index, 1);
-        // this.domElements.EDIT_AREA.toggle(false);
-        // this.selectedArea = { uid: '' };
         this.deselectAllPolys();
         this.polygon.drawAreas(this.floor.areas, this.editing);
     }
 
     handleAreaSelection(area) {
-        this.domElements.EDIT_AREA.toggle(this.editing && this.selectedArea.uid !== area.uid);
-        this.domElements.SHOW_AREA.toggle(!this.editing && this.selectedArea.uid !== area.uid);
         this.selectedArea = this.selectedArea.uid === area.uid ? { uid: '' } : area;
+        this.domElements.EDIT_AREA.toggleClass('hidden', !this.editing || this.selectedArea.uid.length === 0);
+        this.domElements.SHOW_AREA.toggleClass('hidden', this.editing || this.selectedArea.uid.length === 0);
         this.updateAreaFields(this.selectedArea);
     }
 
@@ -156,15 +154,15 @@ export default class FloorPlanner {
 
     toggleDisabled(disabled) {
         this.domElements.EXPORT.toggleClass('disabled', disabled);
-        this.domElements.INTERFACE.toggle(!disabled);
+        this.domElements.INTERFACE.toggleClass('hidden', disabled);
     }
 
     toggleEditMode() {
         this.editing = !this.editing;
-        $('.edit').each((i, elem) => $(elem).toggle(this.editing));
-        $('.show').each((i, elem) => $(elem).toggle(!this.editing));
-        this.domElements.EDIT_AREA.toggle(this.editing && this.selectedArea.uid.length > 0);
-        this.domElements.SHOW_AREA.toggle(!this.editing && this.selectedArea.uid.length > 0);
+        $('.edit').each((i, elem) => $(elem).toggleClass('hidden', !this.editing));
+        $('.show').each((i, elem) => $(elem).toggleClass('hidden', this.editing));
+        this.domElements.EDIT_AREA.toggleClass('hidden', !this.editing || this.selectedArea.uid.length === 0);
+        this.domElements.SHOW_AREA.toggleClass('hidden', this.editing || this.selectedArea.uid.length === 0);
         this.updateAreaFields(this.selectedArea);
         this.updateFloorFields();
 
@@ -192,7 +190,6 @@ export default class FloorPlanner {
     }
 
     updateFloorFields() {
-
         if (this.floor === null) {
             return;
         }

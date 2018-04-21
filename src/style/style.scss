@@ -9,57 +9,29 @@ body {
     margin-top: 60px; // Account for fixed navbar
 }
 
+#left-side,
 #right-side {
-    // position: fixed;
-    // display: none;
     overflow-y: hidden;
     height: calc(100vh - 65px);
-    width: 100%;//calc(34vw - 35px);
-
+    width: 100%;
 }
 
-#show-area {
-    // position: fixed;
-    display: none;
-    overflow-y: scroll;
-    height:100%;
-    width:100%;
-    // height: calc(100vh - 65px);
-    // width: calc(34vw - 35px);
-    // padding: 10px;
-}
-#left-show-area {
-    // position: fixed;
-    overflow-y: scroll;
-    height:100%;
-    width:100%;
-    // height: calc(100vh - 65px);
-    // width: calc(34vw - 35px);
-    // padding: 10px;
-}
+#show-area,
+#show-floor {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
 
-.edit-card-body{
-    padding: 20px;
+    #show-area-desc,
+    #show-floor-details {
+        overflow-y: auto;
+    }
 }
 
 #edit-area {
-    // position: fixed;
-    display: none;
     overflow-y: scroll;
     height:100%;
     width:100%;
-    // height: calc(100vh - 65px);
-    // width: calc(34vw - 35px);
-    // padding: 10px;
-}
-
-#left-side {
-    // position: fixed;
-    overflow-y: hidden;
-    height: calc(100vh - 65px);
-    // width: 66vw;
-    width: 100%;//calc(34vw - 35px);
-    // padding-right: 10px;
 }
 
 #file-import {
@@ -71,7 +43,6 @@ body {
 
     img {
         width: 100%;
-        // min-height: 500px;
     }
 
     svg {
@@ -127,8 +98,12 @@ polygon {
     }
 }
 
-.edit {
-    display: none;
+.edit-card-body {
+    padding: 20px;
+}
+
+.hidden {
+    display: none !important;
 }
 
 .polygon-drawing {

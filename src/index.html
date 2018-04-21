@@ -40,7 +40,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <button type="button" class="btn navbar-btn btn-outline-primary toggle-mode show">Edit</button>
-                    <button type="button" class="btn navbar-btn btn-outline-success toggle-mode edit">Save</button>
+                    <button type="button" class="btn navbar-btn btn-outline-success toggle-mode edit hidden">Save</button>
                 </li>
             </ul>
         </nav>
@@ -48,40 +48,42 @@
     <div id="interface" class="container-fluid bg-light">
         <div class="row">
             <div id="left-side" class="col-sm-8">
-                <div id="left-show-area" class="card">
+                <div id="show-floor" class="card">
                     <div class="card-header show">
                         <h5 id="show-floor-name"></h5>
                     </div>
-                    <div style="background: #ffcdcd" class="card-header edit">
+                    <div style="background: #ffcdcd" class="card-header edit hidden">
                         <h5>Editing</h5>
                     </div>
-                    <div id="floorplan">
-                        <img id="floor-image">
-                        <svg viewBox="0 0 920 690"></svg>
-                    </div>
-                    <div id="show-floor-desc" class="card-body show"></div>
-                    <div class="edit edit-card-body">
-                        <div class="form-group">
-                            <label for="edit-floor-name">Floor Name:</label>
-                            <input type="text" id="edit-floor-name" class="form-control" placeholder="Floor title" aria-label="Floor title">
+                    <div id="show-floor-details">
+                        <div id="floorplan">
+                            <img id="floor-image">
+                            <svg viewBox="0 0 920 690"></svg>
                         </div>
-                        <div class="form-group">
-                            <label for="edit-floor-desc">Description:</label>
-                            <div id="edit-floor-desc"></div>
+                        <div id="show-floor-desc" class="card-body show"></div>
+                        <div class="edit edit-card-body hidden">
+                            <div class="form-group">
+                                <label for="edit-floor-name">Floor Name:</label>
+                                <input type="text" id="edit-floor-name" class="form-control" placeholder="Floor title" aria-label="Floor title">
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-floor-desc">Description:</label>
+                                <div id="edit-floor-desc"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div id="right-side" class="col-sm-4">
-                <div id="show-area" class="card">
-                    <div class="card-header show">
+                <div id="show-area" class="card hidden">
+                    <div class="card-header">
                         <h5 id="show-area-name">Area name</h5>
                     </div>
-                    <div id="show-area-desc" class="card-body show">
+                    <div id="show-area-desc" class="card-body">
                         Area Description
                     </div>
                 </div>
-                <div id="edit-area" class="edit card">
+                <div id="edit-area" class="card hidden">
                     <div style="background: #ffcdcd" class="card-header">
                         <h5>Editing Area</h5>
                     </div>
