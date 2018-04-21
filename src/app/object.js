@@ -1,4 +1,12 @@
-﻿export class Floor {
+﻿export class Floorplan {
+    constructor({ name = '', description = '', floors = [new Floor()] } = {}) {
+        this.name = name;
+        this.description = description;
+        this.floors = floors;
+    }
+}
+
+export class Floor {
     constructor({ image = '', name = '', description = '', areas = [new Area()] } = {}) {
         this.image = image;
         this.name = name;
