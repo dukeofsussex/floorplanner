@@ -1,5 +1,4 @@
-﻿@import "~bootstrap/scss/bootstrap";
-@import "~summernote/dist/summernote-bs4";
+@import "~bootstrap/scss/bootstrap";
 @import "~codemirror/lib/codemirror";
 
 $polygon-default: #007bff;
@@ -30,8 +29,8 @@ body {
 
 #edit-area {
     overflow-y: scroll;
-    height:100%;
-    width:100%;
+    height: 100%;
+    width: 100%;
 }
 
 #file-import {
