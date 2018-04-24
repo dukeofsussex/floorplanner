@@ -1,101 +1,96 @@
-import Floor from './models/floor';
-
-import Polygon from './polygon';
+import draggable from 'vuedraggable';
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome';
+import { Floor, Floorplan } from './models';
 import Storage from './storage';
-
-const DOM_ELEMENT_ID_NAMES = [
-    'EDIT_AREA',
-    'EDIT_AREA_NAME',
-    'EDIT_AREA_DESC',
-    'EDIT_AREA_HOVER_DESC',
-    'EDIT_FLOOR_NAME',
-    'EDIT_FLOOR_DESC',
-    'SHOW_AREA',
-    'SHOW_AREA_NAME',
-    'SHOW_AREA_DESC',
-    'SHOW_FLOOR_NAME',
-    'SHOW_FLOOR_DESC',
-    'FLOOR_IMAGE',
-    'FLOOR_IMAGE_URL',
-    'FLOOR_LOADER',
-    'FILE_IMPORT',
-    'DELETE_AREA',
-    'DELETE_FLOOR',
-    'IMPORT',
-    'EXPORT',
-    'INTERFACE'
-];
+import FloorGraph from './components/floor-graph/floor-graph.component.vue';
+import Summernote from './components/summernote/summernote.component.vue';
 
 export default {
     name: 'App',
+    components: {
+        draggable,
+        FontAwesomeIcon,
+        FloorGraph,
+        Summernote,
+    },
+    computed: {
+        canGoDownALevel: function () {
+            return this.selectedFloorIndex !== 0;
+        },
+        canGoUpALevel: function () {
+            return this.selectedFloorIndex < (this.floorplan.floors.length - 1);
+        },
+        floor: function () {
+            return this.floorplan.floors[this.selectedFloorIndex];
+        },
+    },
     data: function () {
         return {
-            floor: null,
-            polygon: null,
-            storage: new Storage(),
             areaSelected: false,
-            domElements: {},
+            floorplan: new Floorplan(),
+            storage: new Storage(),
             editing: false,
             selectedArea: { uid: '' },
+            selectedAreaIndex: -1,
             selectedFloorIndex: 0,
+            showImageInputField: false,
         }
     },
     mounted: function () {
-        this.init();
+        this.floorplan = this.storage.getFloorplan() || new Floorplan();
     },
     methods: {
-        init: function () {
-            console.log(this);
-            this.floor = this.storage.getFloor(this.selectedFloorIndex);
-            this.polygon = new Polygon('#floorplan > svg', (area) => this.handleAreaSelection(area));
-            this.initListeners();
-
-            console.log(this.floor);
-            this.toggleDisabled(this.floor === null);
-            if (this.floor !== null) {
-                this.domElements.FLOOR_IMAGE.attr('src', this.floor.image);
-                this.updateFloorFields();
-                this.polygon.drawAreas(this.floor.areas, this.editing);
-            }
-        },
         addFloor: function () {
-            this.deselectAllPolys();
+            this.resetSelectedArea();
 
-            this.selectedFloorIndex = this.storage.addFloor(new Floor({ image: this.domElements.FLOOR_IMAGE_URL.val() }));
-            this.init();
+            this.floorplan.floors.push(new Floor({ name: 'New Floor' }));
+            this.storage.updateFloorplan(this.floorplan);
 
-            // Delay clearing the input field until the modal has closed
-            setTimeout(() => this.domElements.FLOOR_IMAGE_URL.val(''), 250);
+            this.selectFloor(this.floorplan.floors.length - 1)
         },
-        deselectAllPolys: function() { // Added by Rob
-
-            if (this.floor !== null) {
-                this.handleAreaSelection(this.selectedArea);
-
-                // Don't leave edit mode when deselecting anymore
-                // if (this.editing) {
-                //     this.toggleEditMode();
-                // }
-                this.polygon.selectedAreaIndex = -1;
-                this.polygon.editing = false;
-
-                this.updateAreaFields(this.selectedArea);
-                this.updateFloorFields();
-                this.polygon.drawAreas(this.floor.areas, this.editing);
+        changeFloorOrder: function (evt) {
+            if (!evt.moved) {
+                return;
             }
+
+            if (evt.moved.oldIndex === this.selectedFloorIndex) {
+                this.selectedFloorIndex = evt.moved.newIndex;
+            } else if (evt.moved.oldIndex < this.selectedFloorIndex && evt.moved.newIndex >= this.selectedFloorIndex) {
+                this.selectedFloorIndex -= 1;
+            } else if (evt.moved.oldIndex > this.selectedFloorIndex && evt.moved.newIndex <= this.selectedFloorIndex) {
+                this.selectedFloorIndex += 1;
+            }
+
+            this.storage.updateFloorplan(this.floorplan);
         },
-        handleExport: function () {
-            if (this.domElements.EXPORT.hasClass('disabled')) {
-                return false;
+        deleteArea: function () {
+            this.floorplan.floors[this.selectedFloorIndex].areas.splice(this.selectedAreaIndex, 1);
+            this.resetSelectedArea();
+        },
+        deleteFloor: function (index) {
+            this.floorplan.floors.splice(index, 1);
+            this.storage.updateFloorplan(this.floorplan);
+
+            let newFloorIndex = this.selectedFloorIndex;
+
+            if (index <= this.selectedFloorIndex) {
+                newFloorIndex = (this.selectedFloorIndex > 0 ? this.selectedFloorIndex - 1 : 0);
+            }
+
+            this.selectFloor(newFloorIndex);
+        },
+        download: function () {
+            if (!this.floor) {
+                return;
             }
 
             const element = document.createElement('a');
             element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(this.storage.export()));
 
-            let exportName = 'floorplan'
-            // Rob says "I don't know how to properly check empties here"
-            if (this.floor !== null && this.floor.name !== null && this.floor.name !== "") {
-                exportName = this.floor.name;
+            let exportName = 'floorplan';
+
+            if (this.floorplan.name !== '') {
+                exportName = this.floorplan.name;
             }
 
             element.setAttribute('download', exportName + '.json');
@@ -107,157 +102,78 @@ export default {
 
             document.body.removeChild(element);
         },
-        handleImport: function() {
-            this.deselectAllPolys();
-
-            const files = this.domElements.FILE_IMPORT[0].files;
-
-            if (!files.length > 0) {
+        newFloorplan: function () {
+            this.storage.deleteFloorplan();
+            this.floorplan = new Floorplan();
+            this.storage.addFloorplan(this.floorplan);
+        },
+        selectArea: function (area) {
+            if (this.selectedArea.uid === area.uid) {
+                this.resetSelectedArea();
+            } else {
+                this.selectedArea = this.selectedArea.uid === area.uid ? { uid: '' } : area;
+                this.areaSelected = this.selectedArea.uid !== '';
+                this.selectedAreaIndex = this.floorplan.floors[this.selectedFloorIndex].areas.findIndex((a) => a.uid === this.selectedArea.uid);
+            }
+        },
+        selectFloor: function (index) {
+            if (index === this.selectedFloorIndex || index < 0 || index >= this.floorplan.floors.length) {
                 return;
             }
 
-            const file = files[0];
-            const fileReader = new FileReader();
-            fileReader.onload = () => {
-                this.storage.import(fileReader.result);
-                this.init();
-            }
-            fileReader.readAsText(file);
-        },
-        handleAreaDelete: function () {
-            const index = this.floor.areas.findIndex((a) => a.uid === this.selectedArea.uid);
-            this.floor.areas.splice(index, 1);
-            this.deselectAllPolys();
-            this.polygon.drawAreas(this.floor.areas, this.editing);
-        },
-        handleAreaSelection: function (area) {
-            this.selectedArea = this.selectedArea.uid === area.uid ? { uid: '' } : area;
-            this.domElements.EDIT_AREA.toggleClass('hidden', !this.editing || this.selectedArea.uid.length === 0);
-            this.domElements.SHOW_AREA.toggleClass('hidden', this.editing || this.selectedArea.uid.length === 0);
-            this.updateAreaFields(this.selectedArea);
-        },
-        handleFloorDelete: function () {
-            this.deselectAllPolys();
-            this.storage.deleteFloor(this.selectedFloorIndex);
-            this.selectedFloorIndex = 0;
-            this.init();
-        },
-        toggleDisabled: function (disabled) {
-            this.domElements.EXPORT.toggleClass('disabled', disabled);
-            this.domElements.INTERFACE.toggleClass('hidden', disabled);
+            this.selectedFloorIndex = index;
         },
         toggleEditMode: function () {
             this.editing = !this.editing;
-            $('.edit').each((i, elem) => $(elem).toggleClass('hidden', !this.editing));
-            $('.show').each((i, elem) => $(elem).toggleClass('hidden', this.editing));
-            this.domElements.EDIT_AREA.toggleClass('hidden', !this.editing || this.selectedArea.uid.length === 0);
-            this.domElements.SHOW_AREA.toggleClass('hidden', this.editing || this.selectedArea.uid.length === 0);
-            this.updateAreaFields(this.selectedArea);
-            this.updateFloorFields();
 
-            if (this.floor === null) {
+            if (!this.editing) {
+                this.storage.updateFloorplan(this.floorplan);
+            }
+        },
+        toggleImageInputField: function () {
+            this.showImageInputField = !this.showImageInputField;
+        },
+        upload: function ($event) {
+            console.log($event);
+            if (!event.target.files.length > 0) {
                 return;
             }
 
-            this.polygon.drawAreas(this.floor.areas, this.editing);
-            this.storage.updateFloor(this.floor, this.selectedFloorIndex);
+            this.resetSelectedArea();
+
+            const file = event.target.files[0];
+            const fileReader = new FileReader();
+            fileReader.onload = () => {
+                this.storage.import(fileReader.result);
+                this.floorplan = this.storage.getFloorplan();
+                this.$refs.fileImportForm.reset();
+            }
+            fileReader.readAsText(file);
         },
-        updateAreaFields: function (area) {
-            if (area.uid.length === 0) {
-                return;
-            }
-
-            if (this.editing) {
-                this.domElements.EDIT_AREA_NAME.val(area.name);
-                this.domElements.EDIT_AREA_DESC.summernote('code', area.description);
-                this.domElements.EDIT_AREA_HOVER_DESC.summernote('code', area.hoverDescription);
-            } else {
-                this.domElements.SHOW_AREA_NAME.html(area.name);
-                this.domElements.SHOW_AREA_DESC.html(area.description);
-            }
+        resetSelectedArea: function () {
+            this.selectedArea = { uid: '' };
+            this.selectedAreaIndex = -1;
+            this.areaSelected = false;
         },
-        updateFloorFields: function() {
-            if (this.floor === null) {
-                return;
+        onBlur: function (type, value) {
+            switch (type) {
+                case 'floorDesc':
+                    this.floorplan.floors[this.selectedFloorIndex].description = value;
+                    break;
+                case 'areaName':
+                    this.floorplan.floors[this.selectedFloorIndex].areas[this.selectedAreaIndex].name = value;
+                    break;
+                case 'areaDesc':
+                    this.floorplan.floors[this.selectedFloorIndex].areas[this.selectedAreaIndex].description = value;
+                    break;
+                case 'areaHoverDesc':
+                    this.floorplan.floors[this.selectedFloorIndex].areas[this.selectedAreaIndex].hoverDescription = value;
+                    break;
+                default: // floorName, floorImage and floorplan settings
+                    break;
             }
 
-            if (this.editing) {
-                this.domElements.EDIT_FLOOR_NAME.val(this.floor.name);
-                this.domElements.EDIT_FLOOR_DESC.summernote('code', this.floor.description);
-            } else {
-                this.domElements.SHOW_FLOOR_NAME.html(this.floor.name);
-                this.domElements.SHOW_FLOOR_DESC.html(this.floor.description);
-            }
-        },
-        loadDOMElements: function () {
-            for (let i = 0; i < DOM_ELEMENT_ID_NAMES.length; i++) {
-                const actualIdentifier = DOM_ELEMENT_ID_NAMES[i].toLowerCase().replace(/\_/g, '-');
-                this.domElements[DOM_ELEMENT_ID_NAMES[i]] = $('#' + actualIdentifier);
-            }
-        },
-        initListeners: function () {
-            this.loadDOMElements();
-
-            this.domElements.EDIT_AREA_NAME.blur(() => {
-                const index = this.floor.areas.findIndex((a) => a.uid === this.selectedArea.uid);
-                this.floor.areas[index].name = this.domElements.EDIT_AREA_NAME.val();
-                this.storage.updateFloor(this.floor, this.selectedFloorIndex);
-            })
-
-            this.domElements.EDIT_AREA_DESC.summernote({
-                height: 200,
-                focus: false,
-                callbacks: {
-                    onBlur: () => {
-                        const index = this.floor.areas.findIndex((a) => a.uid === this.selectedArea.uid);
-                        this.floor.areas[index].description = this.domElements.EDIT_AREA_DESC.summernote('code');
-                        this.storage.updateFloor(this.floor, this.selectedFloorIndex);
-                    }
-                }
-            });
-
-            this.domElements.EDIT_AREA_HOVER_DESC.summernote({
-                height: 70,
-                focus: false,
-                toolbar: [['media', ['picture']]],
-                callbacks: {
-                    onBlur: () => {
-                        const index = this.floor.areas.findIndex((a) => a.uid === this.selectedArea.uid);
-                        this.floor.areas[index].hoverDescription = this.domElements.EDIT_AREA_HOVER_DESC.summernote('code');
-                        this.storage.updateFloor(this.floor, this.selectedFloorIndex);
-                    }
-                }
-            });
-
-            this.domElements.EDIT_FLOOR_NAME.blur(() => {
-                this.floor.name = this.domElements.EDIT_FLOOR_NAME.val();
-                this.storage.updateFloor(this.floor, this.selectedFloorIndex);
-            });
-
-            this.domElements.EDIT_FLOOR_DESC.summernote({
-                height: 260,
-                focus: false,
-                callbacks: {
-                    onBlur: () => {
-                        this.floor.description = this.domElements.EDIT_FLOOR_DESC.summernote('code');
-                        this.storage.updateFloor(this.floor, this.selectedFloorIndex);
-                    }
-                }
-            });
-
-            this.domElements.FLOOR_LOADER.on('click', () => this.addFloor());
-
-            this.domElements.IMPORT.on('click', () => this.domElements.FILE_IMPORT.click());
-
-            this.domElements.FILE_IMPORT.change(() => this.handleImport());
-
-            this.domElements.EXPORT.on('click', () => this.handleExport());
-
-            this.domElements.DELETE_AREA.on('click', () => this.handleAreaDelete());
-
-            this.domElements.DELETE_FLOOR.on('click', () => this.handleFloorDelete());
-
-            $('.toggle-mode').on('click', () => this.toggleEditMode());
+            this.storage.updateFloorplan(this.floorplan);
         },
     }
 };

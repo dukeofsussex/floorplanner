@@ -13,46 +13,85 @@ body {
     overflow-y: hidden;
     height: calc(100vh - 65px);
     width: 100%;
-}
 
-#show-area,
-#show-floor {
-    display: flex;
-    height: 100%;
-    flex-direction: column;
+    #area-card,
+    #floor-card {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
 
-    #show-area-desc,
-    #show-floor-details {
-        overflow-y: auto;
+        .details {
+            overflow-y: auto;
+        }
     }
 }
 
-#edit-area {
-    overflow-y: scroll;
-    height: 100%;
-    width: 100%;
+#getting-started {
+    height: calc(100vh - 65px);
+
+    .card {
+        top: 50%;
+        transform: translateY(-50%);
+
+        .card-img-top {
+            height: 250px;
+
+            svg {
+                height: 250px;
+                vertical-align: middle;
+            }
+        }
+    }
 }
 
 #file-import {
     display: none;
 }
 
-#floorplan {
+#floor {
     position: relative;
 
     img {
         width: 100%;
     }
 
-    svg {
-        display: block;
+   #floor-graph {
         position: absolute;
+        display: block;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         z-index: 10;
     }
+}
+
+#floorplan-description {
+    resize: none;
+}
+
+#floor-image-selector {
+    position: absolute;
+    width: 50%;
+    top: 10px;
+    right: 15px;
+    z-index: 1000;
+
+    .inactive {
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-top-left-radius: 0.25rem;
+        border-bottom-left-radius: 0.25rem;
+        z-index: 1000;
+    }
+}
+
+#floor-selector {
+    position: absolute;
+    top: 65px;
+    right: 25px;
+    z-index: 1000;
 }
 
 #tooltip {
@@ -99,6 +138,14 @@ polygon {
 
 .edit-card-body {
     padding: 20px;
+}
+
+.drag-helper {
+    cursor: move;
+}
+
+.drag-helper-column {
+    width: 1%;
 }
 
 .hidden {
