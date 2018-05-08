@@ -180,7 +180,7 @@ export default {
                 .attr('class', 'area');
 
             const polygon = individualAreaGroup.selectAll('polygon')
-                .data(d => [{ uid: d.uid, hoverDesc: d.hoverDescription, points: d.points }]);
+                .data(d => [{ uid: d.uid, name: d.name, hoverDesc: d.hoverDescription, points: d.points }]);
 
             polygon.exit().remove();
 
@@ -202,7 +202,7 @@ export default {
                         return;
                     }
 
-                    this.tooltip.html(d.hoverDesc);
+                    this.tooltip.html(`<h6>${d.name}</h6>${d.hoverDesc}`);
                     this.tooltip.style('opacity', 1);
                 })
                 .on('mousemove', function mousemove() {
