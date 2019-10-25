@@ -4,7 +4,7 @@ module.exports = {
         node: true,
     },
     extends: [
-        'plugin:vue/essential',
+        'plugin:vue/recommended',
         '@vue/airbnb',
         '@vue/typescript',
     ],
@@ -13,6 +13,8 @@ module.exports = {
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
         indent: ['error', 4],
         'max-len': ['error', 150],
+        semi: 'off',
+        '@typescript-eslint/semi': ['error'],
         'vue/html-closing-bracket-newline': ['error', {
             singleline: 'never',
             multiline: 'never',
