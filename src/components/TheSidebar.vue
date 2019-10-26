@@ -6,7 +6,7 @@
                     <button class="btn btn-link nav-link"
                             href="#">
                         <FaIcon :icon="['fa', 'file']" />
-                        New
+                        TODO
                     </button>
                 </li>
                 <li class="nav-item">
@@ -16,13 +16,6 @@
                         Import
                     </button>
                 </li>
-                <form ref="fileImportForm">
-                    <input id="file-import"
-                           ref="fileImport"
-                           type="file"
-                           accept=".json"
-                           @change="upload($event.target.files[0])">
-                </form>
                 <li class="nav-item">
                     <button class="btn btn-link nav-link"
                             @click="download">
@@ -31,11 +24,20 @@
                     </button>
                 </li>
             </ul>
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <form ref="fileImportForm">
+                <input id="file-import"
+                       ref="fileImport"
+                       type="file"
+                       accept=".json"
+                       @change="upload($event.target.files[0])">
+            </form>
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center pl-3 mt-4 mb-1 text-muted">
                 <span>Floors</span>
                 <button class="btn btn-link btn-sm text-muted"
+                        title="Add floor"
                         @click="addFloor">
-                    <FaIcon :icon="['fa', 'plus-circle']" />
+                    <FaIcon :icon="['fa', 'plus-circle']"
+                            class="mr-2" />
                 </button>
             </h6>
             <draggable :list="floorplan.floors"
@@ -54,9 +56,10 @@
                     </button>
                     <button v-if="!floor.active"
                             class="btn btn-sm btn-link nav-link"
+                            title="Remove floor"
                             @click="removeFloor(index)">
                         <FaIcon :icon="['fa', 'times-circle']"
-                                class="handle mr-2" />
+                                class="text-danger" />
                     </button>
                 </li>
             </draggable>
@@ -151,9 +154,12 @@
 </script>
 
 <style lang="scss" scoped>
-
     #file-import {
         display: none;
+    }
+
+    .handle {
+        cursor: move;
     }
 
     .sidebar {
@@ -181,11 +187,21 @@
             }
         }
 
+        .nav-item > button:first-of-type > svg {
+            margin-right: 0.25rem;
+        }
+
         .nav-link {
+            border-radius: 0;
             color: #333;
-            border-bottom-left-radius: 0;
-            border-top-left-radius: 0;
             font-weight: 500;
+        }
+
+        .nav-pills {
+            .nav-item:focus,
+            .nav-item:hover {
+                background-color: #eee;
+            }
         }
 
         .sidebar-heading {
