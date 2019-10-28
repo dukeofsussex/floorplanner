@@ -11,9 +11,11 @@
                 <h4 v-else
                     class="h4"
                     v-text="floor.name" />
-                <button class="btn btn-link"
-                        @click="toggleEditing('details')"
-                        v-text="editingDetailsToggleDesc" />
+                <div class="mr-5">
+                    <button class="btn btn-link mr-5"
+                            @click="toggleEditing('details')"
+                            v-text="editingDetailsToggleDesc" />
+                </div>
             </div>
             <textarea v-if="editing.details"
                       v-model="floor.description"

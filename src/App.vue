@@ -1,6 +1,7 @@
 <template>
     <div>
         <TheHeader @toggleSidebar="toggleSidebar" />
+        <TheOctocat />
         <div class="container-fluid">
             <div class="row">
                 <TheSidebar :small="small"
@@ -14,6 +15,7 @@
 <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator';
     import TheHeader from './components/TheHeader.vue';
+    import TheOctocat from './components/TheOctocat.vue';
     import TheSidebar from './components/TheSidebar.vue';
     import TheView from './components/TheView.vue';
     import { Floor } from './models';
@@ -22,6 +24,7 @@
     @Component({
         components: {
             TheHeader,
+            TheOctocat,
             TheSidebar,
             TheView,
         },
