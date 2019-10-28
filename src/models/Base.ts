@@ -1,4 +1,5 @@
 export default interface Base {
-    name: String;
-    description: String;
+    name: string;
+    description: string;
+    uid: string;
 }

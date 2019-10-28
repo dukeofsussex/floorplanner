@@ -27,17 +27,29 @@ const defaultTestFloorplan = {
 };
 */
 
-import { Floorplan } from '@/models';
+import { Floor, Point } from '@/models';
 
 const Key = 'floorplanner:floorplan';
 
 export const Storage = {
-    load: (): Floorplan | null => {
-        const floorplan = localStorage.getItem(Key);
-        return floorplan === null ? null : JSON.parse(floorplan);
+    load: (): Floor[] | null => {
+        const floors = localStorage.getItem(Key);
+        return floors === null ? null : JSON.parse(floors);
     },
-    save: (floorplan: Floorplan) => localStorage.setItem(Key, JSON.stringify(floorplan)),
+    save: (floors: Floor[]) => localStorage.setItem(Key, JSON.stringify(floors)),
 };
+
+export function distance(lineStart: Point, lineEnd: Point) {
+    return Math.sqrt(((lineEnd.x - lineStart.x) ** 2) + ((lineEnd.y - lineStart.y) ** 2));
+}
+
+export function distanceFromLine(point: Point, lineStart: Point, lineEnd: Point) {
+    return Math.abs((((lineEnd.y - lineStart.y) * point.x)
+        - ((lineEnd.x - lineStart.x) * point.y))
+        + ((lineEnd.x * lineStart.y)
+            - (lineEnd.y * lineStart.x)))
+        / distance(lineStart, lineEnd);
+}
 
 export function generateUID() {
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -48,4 +60,31 @@ export function generateUID() {
     }
 
     return text;
+}
+
+export function getClosestPointOnLine(point: Point, lineStart: Point, lineEnd: Point) {
+    const dist = (((point.x - lineStart.x) * (lineEnd.x - lineStart.x))
+        + ((point.y - lineStart.y) * (lineEnd.y - lineStart.y)))
+        / (((lineEnd.x - lineStart.x) ** 2) + ((lineEnd.y - lineStart.y) ** 2));
+
+    return {
+        x: lineStart.x + (dist * (lineEnd.x - lineStart.x)),
+        y: lineStart.y + (dist * (lineEnd.y - lineStart.y)),
+    };
+}
+
+export function getMousePosition(svg: SVGSVGElement, event: MouseEvent) {
+    const refPoint = svg.createSVGPoint();
+
+    refPoint.x = event.clientX;
+    refPoint.y = event.clientY;
+
+    return refPoint.matrixTransform(svg.getScreenCTM()!.inverse());
+}
+
+export function pointIsBetween(point: Point, lineStart: Point, lineEnd: Point) {
+    return (Math.round(distance(lineStart, point)) + Math.round(distance(point, lineEnd)))
+        <= (Math.round(distance(lineStart, lineEnd)) + 1)
+        && (Math.round(distance(lineStart, point)) + Math.round(distance(point, lineEnd)))
+        >= (Math.round(distance(lineStart, lineEnd)) - 1);
 }

@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row">
                 <TheSidebar :small="small"
-                            :fp.sync="floorplan" />
+                            :f.sync="floors" />
                 <TheView :f.sync="activeFloor" />
             </div>
         </div>
@@ -16,7 +16,7 @@
     import TheHeader from './components/TheHeader.vue';
     import TheSidebar from './components/TheSidebar.vue';
     import TheView from './components/TheView.vue';
-    import { Floor, Floorplan } from './models';
+    import { Floor } from './models';
     import { Storage, generateUID } from './util';
 
     @Component({
@@ -27,40 +27,49 @@
         },
     })
     export default class App extends Vue {
-        floorplan: Floorplan = {
-            name: 'New floorplan',
-            description: '',
-            floors: [
-                {
-                    active: true,
-                    areas: [],
-                    description: '',
-                    image: '',
-                    name: 'Floor 1',
-                    uid: generateUID(),
-                },
-                {
-                    active: false,
-                    areas: [],
-                    description: '',
-                    image: '',
-                    name: 'Floor 2',
-                    uid: generateUID(),
-                },
-            ],
-        };
+        floors: Floor[] = [
+            {
+                active: true,
+                areas: [
+                    {
+                        description: 'Test',
+                        hoverDescription: 'Hover text',
+                        name: 'Area 1',
+                        points: [
+                            { x: 100, y: 100 },
+                            { x: 150, y: 100 },
+                            { x: 150, y: 150 },
+                            { x: 100, y: 150 },
+                        ],
+                        uid: generateUID(),
+                    },
+                ],
+                description: '',
+                image: 'http://i.imgur.com/oFZYfQwh.jpg',
+                name: 'Floor 1',
+                uid: generateUID(),
+            },
+            {
+                active: false,
+                areas: [],
+                description: '',
+                image: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Weakness_of_Turing_test_1.svg',
+                name: 'Floor 2',
+                uid: generateUID(),
+            },
+        ];
 
         small = false;
 
         get activeFloor(): Floor | undefined {
-            return this.floorplan.floors.find(f => f.active);
+            return this.floors.find(f => f.active);
         }
 
         created() {
-            const storedFloorplan = Storage.load();
+            const storedfloors = Storage.load();
 
-            if (storedFloorplan !== null) {
-                this.floorplan = storedFloorplan;
+            if (storedfloors !== null) {
+                this.floors = storedfloors;
             }
         }
 
@@ -78,9 +87,6 @@
         font-size: .875rem;
     }
 
-    /*
-     * Content
-     */
     [role="main"] {
         padding-top: 133px; /* Space for fixed navbar */
     }
@@ -89,5 +95,10 @@
         [role="main"] {
             padding-top: 48px; /* Space for fixed navbar */
         }
+    }
+
+    /* Fix naming collision between Bootstrap and v-tooltip */
+    .tooltip {
+        opacity: 1;
     }
 </style>

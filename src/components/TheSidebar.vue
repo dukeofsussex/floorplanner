@@ -40,12 +40,12 @@
                             class="mr-2" />
                 </button>
             </h6>
-            <draggable :list="floorplan.floors"
+            <draggable :list="floors"
                        class="nav nav-pills flex-column mb-2"
                        handle=".handle"
                        tag="ul"
                        @change="changeOrder">
-                <li v-for="(floor, index) in floorplan.floors"
+                <li v-for="(floor, index) in floors"
                     :key="floor.uid"
                     class="d-flex nav-item">
                     <button :class="['btn', 'btn-link', 'btn-block', 'nav-link', 'text-left', { 'active': floor.active }]"
@@ -75,7 +75,7 @@
         Vue,
     } from 'vue-property-decorator';
     import draggable from 'vuedraggable';
-    import { Floorplan } from '@/models';
+    import { Floor } from '@/models';
     import { generateUID } from '@/util';
 
     @Component({
@@ -86,30 +86,28 @@
     export default class TheSidebar extends Vue {
         @Prop({ default: false }) readonly small!: boolean;
 
-        @PropSync('fp', { default: () => { } }) floorplan!: Floorplan;
+        @PropSync('f', { default: () => { } }) floors!: Floor[];
 
         addFloor() {
-            this.floorplan.floors.push({
+            this.floors.push({
                 active: true,
                 areas: [],
                 description: '',
                 image: '',
-                name: `Floor ${this.floorplan.floors.length + 1}`,
+                name: `Floor ${this.floors.length + 1}`,
                 uid: generateUID(),
             });
-
-            return this.floorplan;
         }
 
         changeOrder() {
-            return this.floorplan;
+            return this.floors;
         }
 
         download() {
             const element = document.createElement('a');
-            element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(this.floorplan, null, 1))}`);
+            element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(this.floors, null, 1))}`);
 
-            element.setAttribute('download', `${this.floorplan.name}.json`);
+            element.setAttribute('download', 'floorplan.json');
 
             element.style.display = 'none';
             document.body.appendChild(element);
@@ -120,17 +118,17 @@
         }
 
         removeFloor(index: number) {
-            this.floorplan.floors.splice(index, 1);
+            this.floors.splice(index, 1);
         }
 
         selectFloor(index: number) {
-            const activeIndex = this.floorplan.floors.findIndex(f => f.active);
+            const activeIndex = this.floors.findIndex(f => f.active);
 
             if (activeIndex !== -1) {
-                this.floorplan.floors[activeIndex].active = false;
+                this.floors[activeIndex].active = false;
             }
 
-            this.floorplan.floors[index].active = true;
+            this.floors[index].active = true;
         }
 
         upload(file: File) {
@@ -145,7 +143,7 @@
                     return;
                 }
 
-                this.floorplan = JSON.parse(fileReader.result);
+                this.floors = JSON.parse(fileReader.result);
                 this.$refs.fileImportForm.reset();
             };
             fileReader.readAsText(file);
