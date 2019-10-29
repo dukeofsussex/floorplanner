@@ -12,24 +12,33 @@
                 <g v-for="(area, index) in areas"
                    :key="area.uid"
                    :class="[ 'area', { 'active': area.uid === selectedAreaUid }]">
-                    <polygon v-tooltip="{ content: `<h6>${area.name}</h6>${area.hoverDescription}`, classes: ['card'], trigger: tooltipTrigger }"
+                    <polygon v-tooltip="{ content: `<h6>${area.name}</h6>${area.hoverDescription}`,
+                                          classes: ['card'],
+                                          offset: 5,
+                                          placement: 'bottom',
+                                          trigger: 'manual',
+                                          show: !editing && tooltipUid === area.uid }"
                              :points="areaPolygonPoints[index]"
                              @click="selectArea(area.uid)"
-                             @mousemove="onMouseMove" />
-                    <circle v-for="point in area.points"
-                            :key="`${point.x}-${point.y}`"
-                            r="3"
-                            :cx="point.x"
-                            :cy="point.y"
-                            @click="onCircleClick(point)"
-                            @mousedown="onCircleMouseDown(point)"
-                            @mousemove="onMouseMove"
-                            @mouseup="onCircleMouseUp" />
+                             @mousemove="onMouseMove"
+                             @mouseover="onPolygonMouseOver(area.uid)"
+                             @mouseout="onPolygonMouseOut" />
+                    <template v-if="editing && selectedArea && selectedArea.uid === area.uid">
+                        <circle v-for="point in area.points"
+                                :key="`${point.x}-${point.y}`"
+                                r="3"
+                                :cx="point.x"
+                                :cy="point.y"
+                                @click="onCircleClick(point)"
+                                @mousedown="onCircleMouseDown(point)"
+                                @mousemove="onMouseMove"
+                                @mouseup="onCircleMouseUp" />
+                    </template>
                 </g>
             </g>
             <g v-if="drawingPoints.length"
                class="polygon-drawing">
-                <polyline :points="drawingPointsPolygonPoints" />
+                <polyline :points="drawingPolygonPoints" />
                 <circle v-for="point in drawingPoints"
                         :key="`${point.x}-${point.y}`"
                         r="4"
@@ -76,6 +85,8 @@
 
         @PropSync('a', { default: () => [] }) areas!: Area[];
 
+        @PropSync('aUid', { default: () => [] }) selectedAreaUid!: string;
+
         dragging = false;
 
         draggedPoint: Point = {
@@ -90,9 +101,7 @@
             y: 0,
         };
 
-        polygonDrawingGroup!: any;
-
-        selectedAreaUid = '';
+        tooltipUid = '';
 
         get areaPolygonPoints() {
             return this.areas
@@ -101,7 +110,7 @@
                     .join(' '));
         }
 
-        get drawingPointsPolygonPoints() {
+        get drawingPolygonPoints() {
             return this.drawingPoints.map(p => [p.x, p.y].join(','))
                 .join(' ');
         }
@@ -110,11 +119,11 @@
             return this.areas.find(a => a.uid === this.selectedAreaUid);
         }
 
-        get tooltipTrigger() {
-            return this.editing ? 'manual' : 'hover';
-        }
-
         selectArea(uid: string) {
+            if (this.drawingPoints.length > 0) {
+                return;
+            }
+
             this.selectedAreaUid = uid === this.selectedAreaUid ? '' : uid;
         }
 
@@ -125,7 +134,7 @@
 
             const point = getMousePosition((this.$refs.floor as SVGSVGElement), event);
 
-            if (this.selectedAreaUid) {
+            if (this.selectedArea) {
                this.addPolygonPoint({ x: point.x, y: point.y });
                return;
             }
@@ -134,9 +143,9 @@
         }
 
         onMouseMove(event: MouseEvent) {
-            // if (this.selectedArea.uid !== '' || this.drawingPoints.length === 0 || !this.editing) {
-            //     return;
-            // }
+            if (!this.editing) {
+                return;
+            }
 
             const point = getMousePosition((this.$refs.floor as SVGSVGElement), event);
 
@@ -166,9 +175,21 @@
             this.dragging = false;
         }
 
+        onPolygonMouseOver(uid: string) {
+            this.tooltipUid = uid;
+        }
+
+        onPolygonMouseOut() {
+            this.tooltipUid = '';
+        }
+
         addPolygonPoint(point: Point) {
             let index = 0;
             let shortestDistance = Number.MAX_VALUE;
+
+            if (!this.selectedArea) {
+                return;
+            }
 
             if (this.selectedArea.points.length <= 2) {
                 this.selectedArea.points.push(point);
@@ -214,17 +235,17 @@
                 return;
             }
 
-            const uid = generateUID();
-
-            this.areas.push({
+            const area = {
                 name: `Area ${this.areas.length + 1}`,
                 hoverDescription: '',
                 description: '',
                 points: this.drawingPoints,
-                uid,
-            });
+                uid: generateUID(),
+            };
+
+            this.areas.push(area);
             this.drawingPoints = [];
-            this.selectedAreaUid = uid;
+            this.selectArea(area.uid);
         }
     }
 </script>
@@ -270,8 +291,8 @@
         position: absolute;
         top: 0;
         left: 0;
-        height: 100%;
         width: 100%;
+        user-select: none;
     }
 
     .polygon-drawing {

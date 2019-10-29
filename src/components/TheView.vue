@@ -3,7 +3,7 @@
           class="col-md-9 ml-sm-auto col-lg-10">
         <div class="pt-3 pb-2 mb-3 border-bottom">
             <div class="d-flex justify-content-between mb-1">
-                <input v-if="editing.details"
+                <input v-if="editing.floor"
                        v-model="floor.name"
                        type="text"
                        class="form-control"
@@ -13,11 +13,11 @@
                     v-text="floor.name" />
                 <div class="mr-5">
                     <button class="btn btn-link mr-5"
-                            @click="toggleEditing('details')"
+                            @click="toggleEditing('floor')"
                             v-text="editingDetailsToggleDesc" />
                 </div>
             </div>
-            <textarea v-if="editing.details"
+            <textarea v-if="editing.floor"
                       v-model="floor.description"
                       class="form-control"
                       placeholder="Floor description"
@@ -36,9 +36,9 @@
                              class="w-100">
                         <TheViewCanvas v-if="viewBox"
                                        :a.sync="floor.areas"
-                                       editing="true"
-                                       :view-box="viewBox"
-                                       @select="selectArea" />
+                                       :a-uid.sync="selectedAreaUid"
+                                       :editing="editing.floor"
+                                       :view-box="viewBox" />
                     </div>
                     <div v-else
                          class="d-flex align-items-center justify-content-center bg-dark text-light card-img-top image-placeholder">
@@ -46,7 +46,7 @@
                             Add an image to start planning
                         </h4>
                     </div>
-                    <div v-if="editing.image"
+                    <div v-if="editing.image || !floor.image"
                          class="card-body">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
@@ -82,7 +82,48 @@
                 </div>
             </div>
             <div class="col-12 col-md-4">
-                {{ floor.areas }}
+                <div v-if="editing.floor && selectedArea"
+                     class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="h5">
+                            Editing Area
+                        </h5>
+                        <button type="button"
+                                class="btn btn-outline-danger"
+                                @click="deleteArea">
+                            <FaIcon :icon="['fas', 'trash-alt']" />
+                            Remove area
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <input v-model="selectedArea.name"
+                               type="text"
+                               class="form-control mb-3"
+                               placeholder="Area name">
+                        <div class="form-group">
+                            <label for="area-desc">Description:</label>
+                            <Editor id="area-desc"
+                                    v-model="selectedArea.description" />
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-area-hover-desc">Hover Description:</label>
+                            <Editor id="area-desc"
+                                    v-model="selectedArea.hoverDescription"
+                                    minimal="true" />
+                        </div>
+                    </div>
+                </div>
+                <div v-else-if="selectedArea"
+                     class="card">
+                    <div class="card-header">
+                        <h5 class="h5"
+                            v-text="selectedArea.name" />
+                    </div>
+                    <div class="card-body"
+                         v-html="selectedArea.description" />
+                </div>
+                <div v-else
+                     class="card bg-light" />
             </div>
         </div>
     </main>
@@ -95,36 +136,45 @@
         Vue,
         Watch,
     } from 'vue-property-decorator';
+    import Editor from './Editor.vue';
     import TheViewCanvas from './TheViewCanvas.vue';
-    // import TheViewEditor from './TheViewEditor.vue';
-    import { Floor } from '@/models';
+    import { Area, Floor } from '@/models';
 
     @Component({
         components: {
+            Editor,
             TheViewCanvas,
-            // TheViewEditor,
         },
     })
     export default class TheView extends Vue {
         @PropSync('f', { default: () => {} }) floor!: Floor;
 
         editing = {
-            details: false,
-            image: true,
+            floor: false,
+            image: false,
         };
+
+        selectedAreaUid = '';
 
         viewBox = '';
 
         get editingDetailsToggleDesc() {
-            return this.editing.details ? 'Save' : 'Edit';
+            return this.editing.floor ? 'Save' : 'Edit';
         }
 
         get imageUrl() {
             return this.floor.image.indexOf('://') !== -1 ? this.floor.image : '';
         }
 
-        selectArea() {
-            console.log(this.floor);
+        get selectedArea() {
+            return this.floor.areas.find(a => a.uid === this.selectedAreaUid);
+        }
+
+        deleteArea() {
+            const index = this.floor.areas.findIndex(a => a.uid === this.selectedAreaUid);
+
+            this.floor.areas.splice(index, 1);
+            this.selectedAreaUid = '';
         }
 
         setImage(url: string) {
@@ -133,6 +183,7 @@
             }
 
             this.floor.image = url;
+            this.editing.floor = true;
             this.editing.image = false;
         }
 
@@ -155,7 +206,7 @@
             img.src = this.floor.image;
         }
 
-        toggleEditing(prop: 'details' | 'image') {
+        toggleEditing(prop: 'floor' | 'image') {
             this.editing[prop] = !this.editing[prop];
         }
 
@@ -171,8 +222,9 @@
                 }
 
                 this.floor.image = fileReader.result;
+                this.editing.floor = true;
                 this.editing.image = false;
-                this.$refs.fileImportForm.reset();
+                (this.$refs.fileImportForm as HTMLFormElement).reset();
             };
             fileReader.readAsDataURL(file);
         }
@@ -187,6 +239,21 @@
     .btn-label {
         border-top-left-radius: 0;
         border-top-right-radius: 0;
+    }
+
+    .card:last-of-type {
+        height: 75vh;
+    }
+
+    .card-img-top {
+        overflow-y: auto;
+        max-height: 75vh;
+    }
+
+    @media (max-width: 767px) {
+        .card-img-top {
+            max-height: inherit;
+        }
     }
 
     .image-placeholder {

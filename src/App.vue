@@ -35,7 +35,7 @@
                 active: true,
                 areas: [
                     {
-                        description: 'Test',
+                        description: 'Test <strong>description</strong>',
                         hoverDescription: 'Hover text',
                         name: 'Area 1',
                         points: [
@@ -43,6 +43,18 @@
                             { x: 150, y: 100 },
                             { x: 150, y: 150 },
                             { x: 100, y: 150 },
+                        ],
+                        uid: generateUID(),
+                    },
+                    {
+                        description: '<i>Pretty</i>',
+                        hoverDescription: 'Hoover',
+                        name: 'Area 2',
+                        points: [
+                            { x: 200, y: 200 },
+                            { x: 250, y: 200 },
+                            { x: 250, y: 250 },
+                            { x: 200, y: 250 },
                         ],
                         uid: generateUID(),
                     },
@@ -54,7 +66,20 @@
             },
             {
                 active: false,
-                areas: [],
+                areas: [
+                    {
+                        description: '<i>Real</i><strong>description</strong>',
+                        hoverDescription: 'Hover text',
+                        name: 'Area 1',
+                        points: [
+                            { x: 100, y: 100 },
+                            { x: 150, y: 100 },
+                            { x: 150, y: 150 },
+                            { x: 100, y: 150 },
+                        ],
+                        uid: generateUID(),
+                    },
+                ],
                 description: '',
                 image: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Weakness_of_Turing_test_1.svg',
                 name: 'Floor 2',
