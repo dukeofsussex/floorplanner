@@ -1,5 +1,5 @@
 <template>
-    <div id="editor">
+    <section>
         <div ref="toolbarContainer">
             <span class="ql-formats">
                 <select class="ql-header" />
@@ -49,7 +49,7 @@
             </span>
         </div>
         <div ref="editorContainer" />
-    </div>
+    </section>
 </template>
 
 <script lang="ts">
@@ -69,7 +69,6 @@
 
         editor!: Quill;
 
-        // TODO Embed image from link
         mounted() {
             this.editor = new Quill(this.$refs.editorContainer as HTMLElement, {
                 modules: {
@@ -81,7 +80,6 @@
 
             this.editor.root.innerHTML = this.value;
 
-            // We will add the update event here
             this.editor.on('text-change', () => this.update);
         }
 
@@ -97,5 +95,9 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "~quill/dist/quill.snow.css"
+    @import "~quill/dist/quill.snow.css";
+
+    ::v-deep .ql-editor {
+        min-height: 250px;
+    }
 </style>

@@ -85,7 +85,7 @@
                 <div v-if="editing.floor && selectedArea"
                      class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="h5">
+                        <h5 class="h5 mb-0">
                             Editing Area
                         </h5>
                         <button type="button"
@@ -243,10 +243,14 @@
 
     .card:last-of-type {
         height: 75vh;
+
+        .card-body {
+            overflow-y: scroll;
+        }
     }
 
     .card-img-top {
-        overflow-y: auto;
+        overflow-y: scroll;
         max-height: 75vh;
     }
 
