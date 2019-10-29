@@ -29,14 +29,32 @@ const defaultTestFloorplan = {
 
 import { Floor, Point } from '@/models';
 
-const Key = 'floorplanner:floorplan';
-
 export const Storage = {
     load: (): Floor[] | null => {
-        const floors = localStorage.getItem(Key);
-        return floors === null ? null : JSON.parse(floors);
+        const floorCount = parseInt(localStorage.getItem('floorplanner:floors') || '0', 10);
+
+        if (floorCount === 0) {
+            return null;
+        }
+
+        const floors = [];
+
+        for (let i = 0; i < floorCount; i += 1) {
+            const floor = localStorage.getItem(`floorplanner:floor:${i}`);
+
+            if (floor !== null) {
+                floors.push(JSON.parse(floor));
+            }
+        }
+
+        return floors;
     },
-    save: (floors: Floor[]) => localStorage.setItem(Key, JSON.stringify(floors)),
+    save: (floors: Floor[]) => {
+        for (let i = 0; i < floors.length; i += 1) {
+            localStorage.setItem(`floorplanner:floor:${i}`, JSON.stringify(floors[i]));
+        }
+        localStorage.setItem('floorplanner:floors', floors.length.toString());
+    },
 };
 
 export function distance(lineStart: Point, lineEnd: Point) {
@@ -60,6 +78,19 @@ export function generateUID() {
     }
 
     return text;
+}
+
+export function generateDummyPlan() {
+    return [
+        {
+            active: true,
+            areas: [],
+            description: '',
+            image: '',
+            name: 'Floor 1',
+            uid: generateUID(),
+        },
+    ];
 }
 
 export function getClosestPointOnLine(point: Point, lineStart: Point, lineEnd: Point) {

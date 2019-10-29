@@ -4,9 +4,9 @@
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <button class="btn btn-link nav-link"
-                            href="#">
+                            @click="create">
                         <FaIcon :icon="['fa', 'file']" />
-                        TODO
+                        New
                     </button>
                 </li>
                 <li class="nav-item">
@@ -43,8 +43,7 @@
             <draggable :list="floors"
                        class="nav nav-pills flex-column mb-2"
                        handle=".handle"
-                       tag="ul"
-                       @change="changeOrder">
+                       tag="ul">
                 <li v-for="(floor, index) in floors"
                     :key="floor.uid"
                     class="d-flex nav-item">
@@ -76,7 +75,7 @@
     } from 'vue-property-decorator';
     import draggable from 'vuedraggable';
     import { Floor } from '@/models';
-    import { generateUID } from '@/util';
+    import { generateDummyPlan, generateUID } from '@/util';
 
     @Component({
         components: {
@@ -90,17 +89,19 @@
 
         addFloor() {
             this.floors.push({
-                active: true,
+                active: false,
                 areas: [],
                 description: '',
                 image: '',
                 name: `Floor ${this.floors.length + 1}`,
                 uid: generateUID(),
             });
+
+            this.selectFloor(this.floors.length - 1);
         }
 
-        changeOrder() {
-            return this.floors;
+        create() {
+            this.floors = generateDummyPlan();
         }
 
         download() {
