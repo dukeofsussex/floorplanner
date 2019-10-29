@@ -69,7 +69,6 @@
 <script lang="ts">
     import {
         Component,
-        Prop,
         PropSync,
         Vue,
     } from 'vue-property-decorator';
@@ -83,8 +82,6 @@
         },
     })
     export default class TheSidebar extends Vue {
-        @Prop({ default: false }) readonly small!: boolean;
-
         @PropSync('f', { default: () => { } }) floors!: Floor[];
 
         addFloor() {

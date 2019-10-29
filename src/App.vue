@@ -1,11 +1,10 @@
 <template>
-    <div>
+    <div :class="{ 'shrink': shrink }">
         <TheHeader @toggleSidebar="toggleSidebar" />
         <TheOctocat />
         <div class="container-fluid">
             <div class="row">
-                <TheSidebar :small="small"
-                            :f.sync="floors" />
+                <TheSidebar :f.sync="floors" />
                 <TheView :f.sync="activeFloor" />
             </div>
         </div>
@@ -32,7 +31,7 @@
     export default class App extends Vue {
         floors: Floor[] = [];
 
-        small = false;
+        shrink = false;
 
         get activeFloor(): Floor | undefined {
             return this.floors.find(f => f.active);
@@ -48,7 +47,7 @@
         }
 
         toggleSidebar() {
-            this.small = !this.small;
+            this.shrink = !this.shrink;
         }
     }
 </script>
@@ -62,7 +61,50 @@
 
     @media (min-width: 768px) {
         [role="main"] {
-            padding-top: 48px; /* Space for fixed navbar */
+            padding-top: 50px; /* Space for fixed navbar */
+        }
+    }
+
+    .shrink {
+        [role="main"] {
+            flex: 0 0 95.83334%;
+            max-width: 95.83334%;
+        }
+
+        .navbar-brand {
+            flex: 0 0 4.16667%;
+            max-width: 4.16667%;
+            font-size: 0;
+        }
+
+        .sidebar {
+            flex: 0 0 4.16667%;
+            max-width: 4.16667%;
+
+            .nav-pills > .nav-item .nav-link {
+                font-size: 0;
+                padding-left: 0.25rem;
+                padding-right: 0.25rem;
+
+                svg {
+                    font-size: initial;
+                }
+            }
+
+            .sidebar-heading {
+                margin-top: 0.25rem !important;
+                padding: 0.25rem !important;
+                font-size: 0;
+                justify-content: center !important;
+
+                span {
+                    display: none;
+                }
+
+                svg {
+                    margin: 0 !important;
+                }
+            }
         }
     }
 
