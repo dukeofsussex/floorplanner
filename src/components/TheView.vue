@@ -67,7 +67,7 @@
                                            accept="image/*"
                                            class="custom-file-input"
                                            @change="uploadImage($event.target.files[0])">
-                                    <label class="custom-file-label">Choose file...</label>
+                                    <label class="custom-file-label">Select image</label>
                                 </div>
                             </div>
                         </form>

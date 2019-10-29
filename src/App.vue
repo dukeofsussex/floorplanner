@@ -55,11 +55,6 @@
 
 <style lang="scss">
     @import '~bootstrap';
-    @import '~bootstrap-vue';
-
-    body {
-        font-size: .875rem;
-    }
 
     [role="main"] {
         padding-top: 133px; /* Space for fixed navbar */

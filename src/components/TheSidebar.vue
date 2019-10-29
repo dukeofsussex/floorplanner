@@ -145,7 +145,7 @@
                 }
 
                 this.floors = JSON.parse(fileReader.result);
-                this.$refs.fileImportForm.reset();
+                (this.$refs.fileImportForm as HTMLFormElement).reset();
             };
             fileReader.readAsText(file);
         }
