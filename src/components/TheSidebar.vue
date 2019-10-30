@@ -122,7 +122,6 @@
         }
 
         upload(file: File) {
-            console.log(file);
             if (!file) {
                 return;
             }
