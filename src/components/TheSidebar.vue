@@ -73,6 +73,7 @@
         Vue,
     } from 'vue-property-decorator';
     import draggable from 'vuedraggable';
+    import { saveAs } from 'file-saver';
     import { Floor } from '@/models';
     import { generateDummyPlan, generateUID } from '@/util';
 
@@ -102,17 +103,8 @@
         }
 
         download() {
-            const element = document.createElement('a');
-            element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(this.floors, null, 1))}`);
-
-            element.setAttribute('download', 'floorplan.json');
-
-            element.style.display = 'none';
-            document.body.appendChild(element);
-
-            element.click();
-
-            document.body.removeChild(element);
+            const blob = new Blob([JSON.stringify(this.floors, null, 2)], { type: 'application/json;charset=utf-8' });
+            saveAs(blob, 'floorplan.json');
         }
 
         removeFloor(index: number) {
