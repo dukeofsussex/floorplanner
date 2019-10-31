@@ -73,7 +73,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="text-center w-100">
+                <div class="text-center mb-3 w-100">
                     <button class="btn btn-outline-info btn-label"
                             title="Remove floor"
                             @click="toggleEditing('image')">

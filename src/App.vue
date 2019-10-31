@@ -55,54 +55,52 @@
 <style lang="scss">
     @import '~bootstrap';
 
+    $shrinkWidth: 80px;
+
     [role="main"] {
-        padding-top: 133px; /* Space for fixed navbar */
+        padding-top: 50px; /* Space for fixed navbar */
     }
 
     @media (min-width: 768px) {
-        [role="main"] {
-            padding-top: 50px; /* Space for fixed navbar */
-        }
-    }
-
-    .shrink {
-        [role="main"] {
-            flex: 0 0 95.83334%;
-            max-width: 95.83334%;
-        }
-
-        .navbar-brand {
-            flex: 0 0 4.16667%;
-            max-width: 4.16667%;
-            font-size: 0;
-        }
-
-        .sidebar {
-            flex: 0 0 4.16667%;
-            max-width: 4.16667%;
-
-            .nav-pills > .nav-item .nav-link {
-                font-size: 0;
-                padding-left: 0.25rem;
-                padding-right: 0.25rem;
-
-                svg {
-                    font-size: initial;
-                }
+        .shrink {
+            [role="main"] {
+                flex: 0 0 calc(100% - #{$shrinkWidth});
+                max-width: calc(100% - #{$shrinkWidth});
             }
 
-            .sidebar-heading {
-                margin-top: 0.25rem !important;
-                padding: 0.25rem !important;
+            .navbar-brand {
+                flex: 0 0 $shrinkWidth;
+                max-width: $shrinkWidth;
                 font-size: 0;
-                justify-content: center !important;
+            }
 
-                span {
-                    display: none;
+            .sidebar {
+                flex: 0 0 $shrinkWidth;
+                max-width: $shrinkWidth;
+
+                .nav-pills > .nav-item .nav-link {
+                    font-size: 0;
+                    padding-left: 0.25rem;
+                    padding-right: 0.25rem;
+
+                    svg {
+                        font-size: initial;
+                    }
                 }
 
-                svg {
-                    margin: 0 !important;
+                .sidebar-heading {
+                    margin-top: 0.25rem !important;
+                    padding: 0.25rem !important;
+                    font-size: 0;
+                    justify-content: center !important;
+
+                    span {
+                        display: none;
+                    }
+
+                    svg {
+                        margin: 0 !important;
+                    }
                 }
             }
         }
