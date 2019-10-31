@@ -123,7 +123,18 @@
                          v-html="selectedArea.description" />
                 </div>
                 <div v-else
-                     class="card bg-light" />
+                     class="card bg-light text-center text-muted">
+                    <h5 v-if="floor.image"
+                        class="my-auto">
+                        <FaIcon :icon="['fa', 'info-circle']" />
+                        <span v-if="floor.areas.length === 0">
+                            Areas can be created by clicking on the image
+                        </span>
+                        <span v-else>
+                            Select an area to view it's details
+                        </span>
+                    </h5>
+                </div>
             </div>
         </div>
     </main>
