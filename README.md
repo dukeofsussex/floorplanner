@@ -1,9 +1,8 @@
-# ![Logo](/public/img/icons/logo-gray.svg "Logo") Floorplanner
+# ![Logo](/public/img/icons/favicon-32x32.png "Logo") Floorplanner
 
-![David](https://img.shields.io/david/dukeofsussex/floorplanner)
+[![David](https://img.shields.io/david/dukeofsussex/floorplanner)](https://david-dm.org/dukeofsussex/floorplanner)
 [![GitHub license](https://img.shields.io/github/license/dukeofsussex/floorplanner)](https://github.com/dukeofsussex/floorplanner/blob/master/LICENSE)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/dukeofsussex/floorplanner)
-![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/dukeofsussex/floorplanner)
 
 Floorplanning and level design utility application.
 
