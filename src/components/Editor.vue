@@ -80,11 +80,19 @@
 
             this.editor.root.innerHTML = this.value;
 
-            this.editor.on('text-change', () => this.update);
+            this.editor.on('text-change', this.update);
+        }
+
+        destroy() {
+            this.editor.off('text-change', this.update);
         }
 
         @Watch('value')
         updateText() {
+            if (this.value === this.editor.root.innerHTML) {
+                return;
+            }
+
             this.editor.root.innerHTML = this.value;
         }
 
